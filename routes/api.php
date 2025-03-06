@@ -58,9 +58,9 @@ Route::middleware('auth:api')->get('/form/{id}', [FormController::class, 'show']
 Route::middleware('auth:api')->put('/form/{id}', [FormController::class, 'update']);
 Route::middleware('auth:api')->delete('/form/{id}', [FormController::class, 'destroy']);
 //TemaForm
-Route::middleware('auth:api')->get('/tema-form', [TemaFormController::class, 'index']);
+Route::middleware('auth:api')->get('/tema-form/{id}', [TemaFormController::class, 'index']);
 Route::middleware('auth:api')->post('/tema-form', [TemaFormController::class, 'store']);
-Route::middleware('auth:api')->get('/tema-form/{id}', [TemaFormController::class, 'show']);
+Route::middleware('auth:api')->get('/tema-form-single/{id}', [TemaFormController::class, 'show']);
 Route::middleware('auth:api')->put('/tema-form/{id}', [TemaFormController::class, 'update']);
 Route::middleware('auth:api')->delete('/tema-form/{id}', [TemaFormController::class, 'destroy']);
 //VariabelForm

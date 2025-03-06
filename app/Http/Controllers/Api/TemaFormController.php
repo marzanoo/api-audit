@@ -11,9 +11,9 @@ class TemaFormController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        $tema = TemaForm::with('form:id,kategori')->get();
+        $tema = TemaForm::with('form:id,kategori')->where('form_id', $id)->get();
         return response()->json([
             'message' => 'Tema berhasil diambil',
             'data' => $tema
