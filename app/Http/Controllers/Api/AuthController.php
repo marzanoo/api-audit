@@ -18,7 +18,8 @@ class AuthController extends Controller
     // public function index() {
     //     return view('aktivasi.aktivasi-berhasil');
     // }
-    public function login (Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -61,10 +62,10 @@ class AuthController extends Controller
             'message' => 'Login berhasil',
             'success' => true
         ], 200);
-
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'nik' => 'required',
             'name' => 'required',
@@ -82,8 +83,8 @@ class AuthController extends Controller
         }
 
         $email_username = User::where('username', $request->username)
-                      ->orWhere('email', $request->username)
-                      ->first();
+            ->orWhere('email', $request->username)
+            ->first();
 
         if ($email_username) {
             return response()->json([
@@ -96,7 +97,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
-            'role' => 2,
+            'role' => 1,
             'password' => Hash::make($request->password)
         ]);
 
@@ -107,11 +108,10 @@ class AuthController extends Controller
             'user' => $user,
             'email' => $user->email
         ], 200);
-
-        
     }
 
-    public function verifyOtp(Request $request) {
+    public function verifyOtp(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'otp' => 'required',
@@ -136,7 +136,7 @@ class AuthController extends Controller
         $user->otp_expires_at = null;
         $user->email_verified_at = Carbon::now();
         $user->save();
-        
+
         return response()->json([
             'message' => 'Verifikasi OTP berhasil',
         ], 200);
@@ -144,7 +144,8 @@ class AuthController extends Controller
         // return redirect()->route('aktivasi-berhasil');
     }
 
-    public function resendOtp(Request $request) {
+    public function resendOtp(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
         ]);
@@ -164,7 +165,8 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
             return response()->json([
@@ -177,7 +179,8 @@ class AuthController extends Controller
         }
     }
 
-    public function refresh() {
+    public function refresh()
+    {
         return response()->json([
             'access_token' => JWTAuth::refresh(),
             'token_type' => 'Bearer',
@@ -185,14 +188,15 @@ class AuthController extends Controller
         ]);
     }
 
-    public function resetDevice(Request $request) {
+    public function resetDevice(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Email atau password salah'

@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 //Auth
 Route::post('/register', [AuthController::class, 'register']);
@@ -64,10 +64,10 @@ Route::middleware('auth:api')->get('/tema-form-single/{id}', [TemaFormController
 Route::middleware('auth:api')->put('/tema-form/{id}', [TemaFormController::class, 'update']);
 Route::middleware('auth:api')->delete('/tema-form/{id}', [TemaFormController::class, 'destroy']);
 //VariabelForm
-Route::middleware('auth:api')->get('/variabel-form', [VariabelFormController::class, 'index']);
+Route::middleware('auth:api')->get('/variabel-form/{id}', [VariabelFormController::class, 'index']);
 Route::middleware('auth:api')->post('/variabel-form', [VariabelFormController::class, 'store']);
 Route::middleware('auth:api')->get('/total-variabel', [VariabelFormController::class, 'getTotalVariabel']);
-Route::middleware('auth:api')->get('/variabel-form/{id}', [VariabelFormController::class, 'show']);
+Route::middleware('auth:api')->get('/variabel-form-single/{id}', [VariabelFormController::class, 'show']);
 Route::middleware('auth:api')->put('/variabel-form/{id}', [VariabelFormController::class, 'update']);
 Route::middleware('auth:api')->delete('/variabel-form/{id}', [VariabelFormController::class, 'destroy']);
 

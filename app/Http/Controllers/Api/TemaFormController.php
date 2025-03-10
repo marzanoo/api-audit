@@ -17,7 +17,7 @@ class TemaFormController extends Controller
         return response()->json([
             'message' => 'Tema berhasil diambil',
             'data' => $tema
-        ]);
+        ], 200);
     }
 
     /**
@@ -33,7 +33,7 @@ class TemaFormController extends Controller
         if (TemaForm::where('form_id', $request->form_id)->where('tema', $request->tema)->exists()) {
             return response()->json([
                 'message' => 'Tema sudah ada',
-            ]);
+            ], 400);
         }
 
         $tema = TemaForm::create([
@@ -44,7 +44,7 @@ class TemaFormController extends Controller
         return response()->json([
             'message' => 'Tema berhasil ditambahkan',
             'data' => $tema
-        ]);
+        ], 200);
     }
 
     /**
@@ -56,7 +56,7 @@ class TemaFormController extends Controller
         return response()->json([
             'message' => 'Tema berhasil diambil',
             'data' => $tema
-        ]);
+        ], 200);
     }
 
     /**
@@ -65,25 +65,23 @@ class TemaFormController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'form_id' => 'required',
             'tema' => 'required',
         ]);
 
-        if (TemaForm::where('form_id', $request->form_id)->where('tema', $request->tema)->where('id', '!=', $id)->exists()) {
+        if (TemaForm::where('tema', $request->tema)->where('id', '!=', $id)->exists()) {
             return response()->json([
                 'message' => 'Tema sudah ada',
-            ]);
+            ], 400);
         }
 
         $tema = TemaForm::find($id);
-        $tema->form_id = $request->form_id;
         $tema->tema = $request->tema;
         $tema->save();
 
         return response()->json([
             'message' => 'Tema berhasil diubah',
             'data' => $tema
-        ]);
+        ], 200);
     }
 
     /**
