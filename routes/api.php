@@ -35,6 +35,7 @@ Route::middleware('auth:api')->post('/reset-device', [AuthController::class, 're
 Route::post('/password/forgot', [PasswordResetController::class, 'sendResetLink']);
 Route::post('/password/reset', [PasswordResetController::class, 'resetPassword']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+Route::middleware('auth:api')->get('/user/{id}', [AuthController::class, 'show']);
 //Karyawan
 Route::middleware('auth:api')->get('/karyawan/{nik}', [KaryawanController::class, 'getKaryawan']);
 Route::middleware('auth:api')->get('/karyawan-pic', [KaryawanController::class, 'getKaryawanPic']);

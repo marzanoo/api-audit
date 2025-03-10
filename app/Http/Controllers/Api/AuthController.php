@@ -59,6 +59,7 @@ class AuthController extends Controller
             'role' => $user->role,
             'email' => $user->email,
             'name' => $user->name,
+            'id' => $user->id,
             'message' => 'Login berhasil',
             'success' => true
         ], 200);
@@ -208,6 +209,15 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Device berhasil direset, silahkan login kembali'
+        ]);
+    }
+
+    public function show($id)
+    {
+        $user = User::find($id);
+        return response()->json([
+            'message' => 'User berhasil diambil',
+            'data' => $user
         ]);
     }
 }
