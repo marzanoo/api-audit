@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AreaController;
+use App\Http\Controllers\Api\AuditAnswerController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DetailAuditAnswerController;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\LantaiController;
@@ -71,7 +73,10 @@ Route::middleware('auth:api')->get('/total-variabel', [VariabelFormController::c
 Route::middleware('auth:api')->get('/variabel-form-single/{id}', [VariabelFormController::class, 'show']);
 Route::middleware('auth:api')->put('/variabel-form/{id}', [VariabelFormController::class, 'update']);
 Route::middleware('auth:api')->delete('/variabel-form/{id}', [VariabelFormController::class, 'destroy']);
-
+//Audit Answer
+Route::middleware('auth:api')->post('/audit-answer-insert', [AuditAnswerController::class, 'store']);
+//Detail Audit Answer
+Route::middleware('auth:api')->get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'getDetailAuditAnswer']);
 
 
 // Route::get('/aktivasi-berhasil', [AuthController::class, 'index'])->name('aktivasi-berhasil');

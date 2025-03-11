@@ -26,4 +26,9 @@ class Area extends Model
     {
         return $this->belongsTo(Karyawan::class, 'pic_area', 'emp_id');
     }
+
+    public function audit_answers()
+    {
+        return $this->hasMany(AuditAnswer::class, 'area_id', 'id');
+    }
 }

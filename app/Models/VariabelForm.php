@@ -18,7 +18,13 @@ class VariabelForm extends Model
         'standar_foto',
     ];
 
-    public function temaForm() {
+    public function temaForm()
+    {
         return $this->belongsTo(TemaForm::class, 'tema_form_id', 'id');
+    }
+
+    public function detailAuditAnswers()
+    {
+        return $this->hasMany(DetailAuditAnswer::class, 'variabel_form_id', 'id');
     }
 }

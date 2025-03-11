@@ -8,4 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class DetailAuditAnswer extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'audit_answer_id',
+        'variabel_form_id',
+        'score',
+    ];
+
+    public function audit_answer()
+    {
+        return $this->belongsTo(AuditAnswer::class, 'audit_answer_id', 'id');
+    }
+
+    public function variabel()
+    {
+        return $this->belongsTo(VariabelForm::class, 'variabel_form_id', 'id');
+    }
 }
