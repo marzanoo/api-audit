@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailAuditAnswer;
+use App\Models\DetailFotoAuditAnswer;
 use Illuminate\Http\Request;
 
 class DetailAuditAnswerController extends Controller
@@ -28,6 +29,25 @@ class DetailAuditAnswerController extends Controller
                 ];
             });
 
-        return response()->json($data, 200);
+        return response()->json(['data' => $data], 200);
+    }
+
+    public function submitAnswer($auditAnswerId, $detailAuditAnswerId, Request $request)
+    {
+        $request->validate([
+            'score' => 'required',
+        ]);
+        $detail = DetailAuditAnswer::where('id', $detailAuditAnswerId)->andWhere('audit_answer_id', $auditAnswerId)->first();
+        $detail->score = $request->score;
+        $detail->save();
+
+        $detail_foto = DetailFotoAuditAnswer::where('detail_audit_answer_id', $detailAuditAnswerId)->first();
+        if ($detail_foto) {
+            DetailFotoAuditAnswer::create([
+                'detail_audit_answer_id' => $detailAuditAnswerId,
+                'image_path' => $request->image_path
+            ]);
+        }
+        return response()->json(['message' => 'Score berhasil disimpan'], 200);
     }
 }
