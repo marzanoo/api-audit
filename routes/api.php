@@ -75,8 +75,11 @@ Route::middleware('auth:api')->put('/variabel-form/{id}', [VariabelFormControlle
 Route::middleware('auth:api')->delete('/variabel-form/{id}', [VariabelFormController::class, 'destroy']);
 //Audit Answer
 Route::middleware('auth:api')->post('/audit-answer-insert', [AuditAnswerController::class, 'store']);
+Route::middleware('auth:api')->get('/audit-answer-auditor/{id}', [AuditAnswerController::class, 'getTotalAuditByAuditor']);
 //Detail Audit Answer
 Route::middleware('auth:api')->get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'getDetailAuditAnswer']);
+Route::middleware('auth:api')->post('/detail-audit-answer/{auditAnswerId}/detail/{detailAuditAnswerId}', [DetailAuditAnswerController::class, 'submitAnswer']);
+Route::middleware('auth:api')->post('/detail-audit-answer/upload-photo/', [DetailAuditAnswerController::class, 'uploadPhoto']);
 
 
 // Route::get('/aktivasi-berhasil', [AuthController::class, 'index'])->name('aktivasi-berhasil');

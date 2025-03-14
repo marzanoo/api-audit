@@ -24,4 +24,14 @@ class DetailAuditAnswer extends Model
     {
         return $this->belongsTo(VariabelForm::class, 'variabel_form_id', 'id');
     }
+
+    public function detailAuditeeAnswer()
+    {
+        return $this->hasMany(DetailAuditeeAnswer::class, 'detail_audit_answer_id', 'id');
+    }
+
+    public function detailFotoAuditAnswer()
+    {
+        return $this->hasMany(DetailFotoAuditAnswer::class, 'detail_audit_answer_id', 'id');
+    }
 }

@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 
 class AuditAnswerController extends Controller
 {
+    public function getTotalAuditByAuditor($id)
+    {
+        $total = AuditAnswer::where('auditor_id', $id)->count();
+        return response()->json(['total' => $total]);
+    }
+
     public function store(Request $request)
     {
         // Validasi input

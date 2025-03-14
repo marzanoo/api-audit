@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DetailFotoAuditAnswer extends Model
+class DetailAuditeeAnswer extends Model
 {
     use HasFactory;
 
-    protected $table = 'detail_foto_audit_answers';
+    protected $table = 'detail_auditee_answers';
 
     protected $fillable = [
         'detail_audit_answer_id',
-        'image_path',
+        'auditee',
     ];
 
     public function detailAuditAnswer()
