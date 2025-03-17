@@ -17,6 +17,27 @@ class AuditAnswerController extends Controller
         return response()->json(['total' => $total]);
     }
 
+    public function getTotalAudit()
+    {
+        $total = AuditAnswer::count();
+        return response()->json([
+            'message' => 'Total audit berhasil diambil',
+            'total' => $total
+        ]);
+    }
+
+    public function getAuditAnswerByArea($areaId)
+    {
+        $auditAnswers = AuditAnswer::where('area_id', $areaId)
+            ->with('auditor:id,name') // This loads the related auditor with just id and name fields
+            ->get();
+
+        return response()->json([
+            'message' => 'Audit answers berhasil diambil',
+            'audit_answer' => $auditAnswers
+        ]);
+    }
+
     public function store(Request $request)
     {
         // Validasi input

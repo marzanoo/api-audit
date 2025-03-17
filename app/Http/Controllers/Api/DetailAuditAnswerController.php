@@ -35,6 +35,8 @@ class DetailAuditAnswerController extends Controller
         return response()->json(['data' => $data], 200);
     }
 
+    public function showAuditAnswer($auditAnswerId) {}
+
     public function submitAnswer($auditAnswerId, $detailAuditAnswerId, Request $request)
     {
         $request->validate([
