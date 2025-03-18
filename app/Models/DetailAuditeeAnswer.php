@@ -20,4 +20,9 @@ class DetailAuditeeAnswer extends Model
     {
         return $this->belongsTo(DetailAuditAnswer::class, 'detail_audit_answer_id', 'id');
     }
+
+    public function userAuditee()
+    {
+        return $this->belongsTo(Karyawan::class, 'auditee', 'emp_id');
+    }
 }

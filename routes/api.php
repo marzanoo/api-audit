@@ -82,6 +82,8 @@ Route::middleware('auth:api')->get('/audit-answer-area/{areaId}', [AuditAnswerCo
 Route::middleware('auth:api')->get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'getDetailAuditAnswer']);
 Route::middleware('auth:api')->post('/detail-audit-answer/{auditAnswerId}/detail/{detailAuditAnswerId}', [DetailAuditAnswerController::class, 'submitAnswer']);
 Route::middleware('auth:api')->post('/detail-audit-answer/upload-photo/', [DetailAuditAnswerController::class, 'uploadPhoto']);
+Route::middleware('auth:api')->get('/detail-audit-answer-show/{auditAnswerId}', [DetailAuditAnswerController::class, 'getAuditAnswer']);
+Route::middleware('auth-api')->post('/detail-audit-answer/upload-signature/', [DetailAuditAnswerController::class, 'uploadSignature']);
 
 
 // Route::get('/aktivasi-berhasil', [AuthController::class, 'index'])->name('aktivasi-berhasil');

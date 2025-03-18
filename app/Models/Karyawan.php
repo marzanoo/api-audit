@@ -21,4 +21,9 @@ class Karyawan extends Model
     {
         return $this->hasOne(Area::class, 'emp_id', 'pic_area');
     }
+
+    public function detailAuditeeAnswer()
+    {
+        return $this->hasMany(DetailAuditeeAnswer::class, 'auditee', 'emp_id');
+    }
 }

@@ -29,4 +29,9 @@ class AuditAnswer extends Model
     {
         return $this->hasMany(DetailAuditAnswer::class, 'audit_answer_id', 'id');
     }
+
+    public function detail_signature_audit_answers()
+    {
+        return $this->hasMany(DetailSignatureAuditAnswer::class, 'audit_answer_id', 'id');
+    }
 }
