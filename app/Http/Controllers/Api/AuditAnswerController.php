@@ -29,7 +29,7 @@ class AuditAnswerController extends Controller
     public function getAuditAnswerByArea($areaId)
     {
         $auditAnswers = AuditAnswer::where('area_id', $areaId)
-            ->with('auditor:id,name') // This loads the related auditor with just id and name fields
+            ->with('auditor:id,name')->orderBy('updated_at', 'desc') // This loads the related auditor with just id and name fields
             ->get();
 
         return response()->json([

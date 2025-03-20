@@ -14,6 +14,8 @@ class DetailAuditeeAnswer extends Model
     protected $fillable = [
         'detail_audit_answer_id',
         'auditee',
+        'auditee_name',
+        'temuan'
     ];
 
     public function detailAuditAnswer()

@@ -60,8 +60,16 @@ class DetailAuditAnswerController extends Controller
             // Check if tertuduh is a string or array
             $tertuduhData = is_array($request->tertuduh) ? $request->tertuduh : [$request->tertuduh];
 
-            foreach ($tertuduhData as $tertuduh) {
+            // Process temuan data
+            $temuanData = $request->has('temuan') ?
+                (is_array($request->temuan) ? $request->temuan : [$request->temuan]) :
+                [];
+
+            foreach ($tertuduhData as $index => $tertuduh) {
                 if (empty($tertuduh)) continue;
+
+                // Get the corresponding temuan for this tertuduh (if available)
+                $temuan = isset($temuanData[$index]) ? $temuanData[$index] : null;
 
                 // Search for employee by name
                 $employee = Karyawan::where('emp_name', 'like', '%' . $tertuduh . '%')->first();
@@ -70,12 +78,16 @@ class DetailAuditAnswerController extends Controller
                     // Create with employee ID
                     DetailAuditeeAnswer::create([
                         'detail_audit_answer_id' => $detailAuditAnswerId,
-                        'auditee' => $employee->emp_id // Store the employee ID as foreign key
+                        'auditee' => $employee->emp_id, // Store the employee ID as foreign key
+                        'auditee_name' => null,
+                        'temuan' => $temuan
                     ]);
                 } else {
                     DetailAuditeeAnswer::create([
                         'detail_audit_answer_id' => $detailAuditAnswerId,
-                        'auditee_name' => $tertuduh // Store as a string
+                        'auditee' => null,
+                        'auditee_name' => $tertuduh, // Store as a string
+                        'temuan' => $temuan
                     ]);
                 }
             }
@@ -172,43 +184,51 @@ class DetailAuditAnswerController extends Controller
     {
         $data = DetailAuditAnswer::with([
             'variabel.temaForm.form',
-            'detailAuditeeAnswer',
+            'detailAuditeeAnswer.userAuditee',
             'detailFotoAuditAnswer'
-        ])
-            ->where('audit_answer_id', $auditAnswerId)->get()
-            ->map(function ($detail) {
-                return [
-                    'id' => $detail->id,
-                    'audit_answer_id' => $detail->audit_answer_id,
-                    'variabel_form_id' => $detail->variabel_form_id,
-                    'variabel' => $detail->variabel->variabel,
-                    'standar_variabel' => $detail->variabel->standar_variabel,
-                    'standar_foto' => $detail->variabel->standar_foto,
-                    'tema' => $detail->variabel->temaForm->tema,
-                    'kategori' => $detail->variabel->temaForm->form->kategori,
-                    'score' => $detail->score,
-                    'auditees' => $detail->detailAuditeeAnswer->map(function ($auditee) {
-                        return [
-                            'id' => $auditee->id,
-                            'auditee' => $auditee->auditee ?: $auditee->auditee_name
-                        ];
-                    }),
-                    'images' => $detail->detailFotoAuditAnswer->map(function ($foto) {
-                        return [
-                            'id' => $foto->id,
-                            'image_path' => $foto->image_path
-                        ];
-                    }),
-                ];
-            });
+        ])->where('audit_answer_id', $auditAnswerId)->get();
+
+        // Cek apakah ada data yang tidak sesuai dengan audit_answer_id yang diminta
+        if ($data->isEmpty() || $data->contains(fn($detail) => $detail->audit_answer_id != $auditAnswerId)) {
+            return response()->json([
+                'message' => 'Data audit tidak ditemukan atau audit_answer_id tidak sesuai'
+            ], 400);
+        }
+
+        $formattedData = $data->map(function ($detail) {
+            return [
+                'id' => $detail->id,
+                'audit_answer_id' => $detail->audit_answer_id,
+                'variabel_form_id' => $detail->variabel_form_id,
+                'variabel' => $detail->variabel->variabel,
+                'standar_variabel' => $detail->variabel->standar_variabel,
+                'standar_foto' => $detail->variabel->standar_foto,
+                'tema' => $detail->variabel->temaForm->tema,
+                'kategori' => $detail->variabel->temaForm->form->kategori,
+                'score' => $detail->score,
+                'auditees' => $detail->detailAuditeeAnswer->map(function ($auditee) {
+                    return [
+                        'id' => $auditee->id,
+                        'auditee' => $auditee->userAuditee ? $auditee->userAuditee->emp_name : $auditee->auditee_name,
+                        'temuan' => $auditee->temuan
+                    ];
+                }),
+                'images' => $detail->detailFotoAuditAnswer->map(function ($foto) {
+                    return [
+                        'id' => $foto->id,
+                        'image_path' => $foto->image_path
+                    ];
+                }),
+            ];
+        });
 
         $signatures = DetailSignatureAuditAnswer::where('audit_answer_id', $auditAnswerId)->first();
 
         return response()->json([
-            'data' => $data,
-            'auditor_signature' => $signatures ? $signatures->auditor_signature : null,
-            'auditee_signature' => $signatures ? $signatures->auditee_signature : null,
-            'facilitator_signature' => $signatures ? $signatures->facilitator_signature : null
+            'data' => $formattedData,
+            'auditor_signature' => $signatures?->auditor_signature,
+            'auditee_signature' => $signatures?->auditee_signature,
+            'facilitator_signature' => $signatures?->facilitator_signature
         ], 200);
     }
 }
