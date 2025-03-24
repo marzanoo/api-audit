@@ -42,9 +42,26 @@ class TemaFormController extends Controller
 
     public function editTemaForm($id)
     {
-        $formId = $id;
         $tema = TemaForm::find($id);
-        return view('admin.konfigurasi.form.tema.edit-tema', compact('tema', 'formId'));
+        return view('admin.konfigurasi.form.tema.edit-tema', compact('tema'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tema' => 'required',
+        ]);
+
+        $tema = TemaForm::where('tema', $request->tema)->where('id', '!=', $id)->exists();
+        if ($tema) {
+            return redirect()->route('edit-tema-form', $id)->with(['tema_error' => 'Tema sudah ada']);
+        }
+
+        $tema = TemaForm::find($id);
+        $tema->tema = $request->tema;
+        $tema->save();
+
+        return redirect()->route('tema-form', $tema->form_id)->with(['tema_success' => 'Tema berhasil diubah']);
     }
 
     public function destroy($id)

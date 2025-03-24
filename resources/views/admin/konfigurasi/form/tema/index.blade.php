@@ -43,7 +43,7 @@
                 <a href="#" class="bg-cyan-500 text-white px-4 py-2 rounded-lg text-center">
                     Detail
                 </a>
-                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-center">
+                <a href="{{ route('edit-tema-form', $item->id) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-center">
                     Ubah
                 </a>
 

@@ -67,5 +67,7 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/tema-form/{id}', [TemaFormController::class, 'index'])->name('tema-form');
     Route::get('/add-tema-form/{id}', [TemaFormController::class, 'addTemaForm'])->name('add-tema-form');
     Route::post('/add-tema-form/{id}', [TemaFormController::class, 'store'])->name('add-tema-form');
+    Route::get('/edit-tema-form/{id}', [TemaFormController::class, 'editTemaForm'])->name('edit-tema-form');
+    Route::put('/edit-tema-form/{id}', [TemaFormController::class, 'update'])->name('edit-tema-form');
     Route::delete('/delete-tema-form/{id}', [TemaFormController::class, 'destroy'])->name('delete-tema-form');
 });
