@@ -22,7 +22,7 @@
     @endif
 
     {{-- Judul Halaman --}}
-    <h1 class="text-xl font-bold mb-4">Konfigurasi Lantai</h1>
+    <h1 class="text-xl font-bold mb-4">Konfigurasi Area</h1>
 
     {{-- Tombol Tambah Area --}}
     <a href="{{ route('add-area') }}" class="bg-black text-white px-4 py-2 rounded-lg">+ Tambah Area</a>

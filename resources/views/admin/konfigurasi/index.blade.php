@@ -23,7 +23,7 @@
     
     <div>
         <h2 class="text-lg font-bold mb-2">Konfigurasi Form Audit</h2>
-        <a href="#" class="block bg-gray-100 p-4 rounded-lg shadow-md flex justify-between items-center hover:bg-gray-200 transition">
+        <a href="{{ route('form') }}" class="block bg-gray-100 p-4 rounded-lg shadow-md flex justify-between items-center hover:bg-gray-200 transition">
             <div>
                 <h3 class="text-lg font-semibold">Konfigurasi Form</h3>
                 <p class="text-gray-600">Total Variabel : 21</p>

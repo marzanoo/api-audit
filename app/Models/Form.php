@@ -13,10 +13,11 @@ class Form extends Model
 
     protected $fillable = [
         'kategori',
+        'deskripsi'
     ];
 
-    public function temaForm() {
+    public function temaForm()
+    {
         return $this->hasMany(TemaForm::class, 'form_id', 'id');
     }
 }
-

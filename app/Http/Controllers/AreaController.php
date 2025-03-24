@@ -46,7 +46,7 @@ class AreaController extends Controller
             'pic_area' => $request->pic_area,
         ]);
 
-        return back()->with(['area_success' => "Area $request->area berhasil ditambahkan"]);
+        return redirect('area')->with(['area_success' => "Area $request->area berhasil ditambahkan"]);
     }
 
     public function editArea($id)

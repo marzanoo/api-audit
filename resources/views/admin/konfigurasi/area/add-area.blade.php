@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Area')
+@section('title', 'Tambah Area - Audit App')
 
 @section('content')
 <div class="container mx-auto p-4 min-h-screen">

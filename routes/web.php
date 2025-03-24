@@ -3,7 +3,9 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\LantaiController;
+use App\Http\Controllers\TemaFormController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +33,7 @@ Route::middleware('verifying')->post('/verify-otp-aktivasi', [AuthController::cl
 Route::middleware('verifying')->post('/resend-otp-aktivasi', [AuthController::class, 'resendOtpAktivasi'])->name('resend-otp-aktivasi');
 
 //---------------------------------Admin-------------------------------------//
-//-----Konfigurasi-----//
+//-----Konfigurasi Objek Audit-----//
 Route::middleware('auth:web')->get('/konfigurasi', [DashboardController::class, 'konfigurasiView'])->name('konfigurasi');
 //Lantai
 Route::middleware('auth:web')->group(function () {
@@ -49,4 +51,21 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/edit-area/{id}', [AreaController::class, 'editArea'])->name('edit-area');
     Route::put('/edit-area/{id}', [AreaController::class, 'update'])->name('edit-area');
     Route::delete('/delete-area/{id}', [AreaController::class, 'destroy'])->name('delete-area');
+});
+
+//-----Form-----//
+//Form
+Route::middleware('auth:web')->group(function () {
+    Route::get('/form', [FormController::class, 'index'])->name('form');
+    Route::get('/add-form', [FormController::class, 'addForm'])->name('add-form');
+    Route::post('/add-form', [FormController::class, 'store'])->name('add-form');
+    Route::delete('/delete-form/{id}', [FormController::class, 'destroy'])->name('delete-form');
+});
+
+//Tema Form
+Route::middleware('auth:web')->group(function () {
+    Route::get('/tema-form/{id}', [TemaFormController::class, 'index'])->name('tema-form');
+    Route::get('/add-tema-form/{id}', [TemaFormController::class, 'addTemaForm'])->name('add-tema-form');
+    Route::post('/add-tema-form/{id}', [TemaFormController::class, 'store'])->name('add-tema-form');
+    Route::delete('/delete-tema-form/{id}', [TemaFormController::class, 'destroy'])->name('delete-tema-form');
 });
