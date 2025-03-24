@@ -4,21 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <script>
-        // Generate Device ID
-        // function getDeviceId() {
-        //     let deviceId = localStorage.getItem('device_id');
-        //     if (!deviceId) {
-        //         deviceId = crypto.randomUUID(); 
-        //         localStorage.setItem('device_id', deviceId);
-        //     }
-        //     return deviceId;
-        // }
-
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     document.getElementById('device_id').value = getDeviceId();
-        // });
-    </script>
+    <link rel="icon" type="image/png" href="{{ asset('logo/logo_wag.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen">
@@ -34,11 +20,15 @@
             <p class="text-red-500 mb-4">{{ session('login_error') }}</p>
         @endif
 
+        @if (session('aktivasi_success'))
+            <p class="text-green-500 mb-4">{{ session('aktivasi_success') }}</p>
+        @endif
+
         <!-- Form -->
         <form action="{{ url('login') }}" method="POST">
             @csrf
 
-            {{-- <input type="hidden" name="device_id" id="device_id"> --}}
+            <input type="hidden" name="device_id" id="device_id">
 
             <div class="mb-4">
                 <input type="text" name="username" placeholder="Username" required 
@@ -62,6 +52,17 @@
             </button>
         </form>
     </div>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let deviceId = localStorage.getItem('device_id');
+        
+            if (!deviceId) {
+                deviceId = (Math.random() + 1).toString(36).substring(7) + Date.now();
+                localStorage.setItem('device_id', deviceId);
+            }
+        
+            document.getElementById("device_id").value = deviceId;
+        });
+    </script>
 </body>
 </html>

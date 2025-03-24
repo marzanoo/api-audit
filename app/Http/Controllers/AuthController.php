@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Karyawan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -23,7 +26,7 @@ class AuthController extends Controller
         $request->validate([
             'username' => 'required',
             'password' => 'required',
-            // 'device_id' => 'required'
+            'device_id' => 'required'
         ]);
 
         $user = User::where('username', $request->username)->first();
@@ -32,20 +35,24 @@ class AuthController extends Controller
             return back()->with(['login_error' => 'Username atau password salah.']);
         }
 
-        // if (!$user->device_id) {
-        //     $user->device_id = $request->device_id;
-        //     $user->save();
-        // } elseif ($user->device_id !== $request->device_id) {
-        //     Auth::logout();
-        //     return back()->with(['login_error' => 'Akun hanya bisa digunakan di perangkat pertama yang terdaftar.']);
-        // }
-
         if (!$user->email_verified_at) {
             Auth::logout();
             return back()->with(['login_error' => 'Email belum diverifikasi.']);
         }
 
-        return redirect()->route('dashboard');
+        $browserDeviceId = $request->device_id;
+
+        if (!$user->device_id) {
+            $user->device_id = $browserDeviceId;
+            $user->save();
+        } elseif ($user->device_id !== $browserDeviceId) {
+            Auth::logout();
+            return back()->with(['login_error' => 'Akun hanya bisa digunakan di perangkat pertama yang terdaftar.']);
+        }
+
+        Cookie::queue('device_id', $browserDeviceId, 60 * 24 * 365);
+
+        return redirect()->route('dashboard')->with(['login_success' => 'Login berhasil.']);
     }
 
     // Menampilkan halaman registrasi
@@ -58,29 +65,88 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
+            'nik' => 'required',
             'name' => 'required',
-            'username' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed'
+            'username' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8'
         ]);
 
-        User::create([
+        $karyawan = Karyawan::where('emp_id', $request->nik)->first();
+        if (!$karyawan) {
+            return back()->with(['register_error' => 'NIK tidak ditemukan']);
+        }
+
+        $email_username = User::where('username', $request->username)->orWhere('email', $request->username)->first();
+
+        if ($email_username) {
+            return back()->with(['register_error' => 'Email atau username sudah digunakan']);
+        }
+
+        $user = User::create([
+            'nik' => $request->nik,
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'role' => 3,
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil, silahkan login.');
+        $user->generateOtpAktivasi();
+
+        session(['otp_email' => $user->email]);
+
+        return redirect()->route('verify-email')->with(['register_success' => 'Registrasi berhasil, silahkan login.']);
     }
 
-    // Menampilkan dashboard setelah login
-    public function dashboard()
+    // Proses aktivasi akun
+    public function verifyOtpAktivasi(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with(['aktivasi_error' => 'Email tidak ditemukan'], 404);
         }
-        return view('dashboard');
+
+        if ($user->otp != $request->otp || Carbon::now()->gt($user->otp_expires_at)) {
+            return back()->with(['aktivasi_error' => 'OTP salah atau kadaluarsa'], 400);
+        }
+
+        // hapus otp setelah verifikasi berhasil
+        $user->otp = null;
+        $user->otp_expires_at = null;
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+
+        return redirect()->route('login')->with(['aktivasi_success' => 'Verifikasi OTP berhasil, silahkan login.']);
+    }
+
+    public function resendOtpAktivasi(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with(['aktivasi_error' => 'Email tidak ditemukan'], 404);
+        }
+
+        $user->generateOtpAktivasi();
+
+        return back()->with(['aktivasi_success' => 'OTP berhasil dikirim ulang ke email anda.']);
+    }
+
+    // Menampilkan halaman verifikasi email
+    public function verifyEmail()
+    {
+        return view('aktivasi.verify-email');
     }
 
     // Logout user
@@ -88,6 +154,10 @@ class AuthController extends Controller
     {
         Auth::logout();
         Session::flush();
+
+        // Hapus cookie
+        Cookie::queue(Cookie::forget('device_id'));
+
         return redirect()->route('login');
     }
 }

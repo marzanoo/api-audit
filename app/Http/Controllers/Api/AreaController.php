@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 class AreaController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $areas = Area::with('lantai:id,lantai', 'karyawans:emp_id,emp_name')->get();
         return response()->json([
             'message' => 'Area berhasil diambil',
@@ -16,7 +17,8 @@ class AreaController extends Controller
         ]);
     }
 
-    public function getTotalArea() {
+    public function getTotalArea()
+    {
         $total = Area::count();
         return response()->json([
             'message' => 'Total area berhasil diambil',
@@ -24,7 +26,8 @@ class AreaController extends Controller
         ]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $area = Area::with('lantai:id,lantai', 'karyawans:emp_id,emp_name')->find($id);
         return response()->json([
             'message' => 'Area berhasil diambil',
@@ -32,17 +35,25 @@ class AreaController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'lantai_id' => 'required',
             'area' => 'required',
             'pic_area' => 'required',
         ]);
 
-        $area = Area::where('pic_area', $request->pic_area)->first();
-        if ($area) {
+        $pic_area = Area::where('pic_area', $request->pic_area)->first();
+        if ($pic_area) {
             return response()->json([
                 'message' => 'PIC area sudah ada di area lain'
+            ]);
+        }
+
+        $existingArea = Area::where('area', $request->area)->first();
+        if ($existingArea) {
+            return response()->json([
+                'message' => "Area '$request->area' sudah terdaftar di lantai lain atau lantai yang sama"
             ]);
         }
 
@@ -58,7 +69,8 @@ class AreaController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'lantai_id' => 'required',
             'area' => 'required',
@@ -82,7 +94,8 @@ class AreaController extends Controller
         ]);
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $area = Area::find($id);
         $area->delete();
         return response()->json([

@@ -76,4 +76,13 @@ class AuditAnswerController extends Controller
             'detail_audit_answers' => DetailAuditAnswer::where('audit_answer_id', $auditAnswerId)->get(),
         ]);
     }
+
+    public function show($id)
+    {
+        $auditAnswer = AuditAnswer::find($id);
+        return response()->json([
+            'message' => 'Audit answer berhasil diambil',
+            'audit_answer' => $auditAnswer
+        ]);
+    }
 }

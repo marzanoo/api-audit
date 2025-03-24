@@ -78,6 +78,7 @@ Route::middleware('auth:api')->post('/audit-answer-insert', [AuditAnswerControll
 Route::middleware('auth:api')->get('/audit-answer-auditor/{id}', [AuditAnswerController::class, 'getTotalAuditByAuditor']);
 Route::middleware('auth:api')->get('/audit-answer-total', [AuditAnswerController::class, 'getTotalAudit']);
 Route::middleware('auth:api')->get('/audit-answer-area/{areaId}', [AuditAnswerController::class, 'getAuditAnswerByArea']);
+Route::middleware('auth:api')->get('/audit-answer/{id}', [AuditAnswerController::class, 'show']);
 //Detail Audit Answer
 Route::middleware('auth:api')->get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'getDetailAuditAnswer']);
 Route::middleware('auth:api')->post('/detail-audit-answer/{auditAnswerId}/detail/{detailAuditAnswerId}', [DetailAuditAnswerController::class, 'submitAnswer']);

@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LantaiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,14 +17,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware('auth:web')->get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+//Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-Route::get('/register', [AuthController::class, 'showRegister']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+Route::middleware('auth:web')->post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('verifying')->get('/verify-email', [AuthController::class, 'verifyEmail'])->name('verify-email');
+Route::middleware('verifying')->post('/verify-otp-aktivasi', [AuthController::class, 'verifyOtpAktivasi'])->name('verify-otp-aktivasi');
+Route::middleware('verifying')->post('/resend-otp-aktivasi', [AuthController::class, 'resendOtpAktivasi'])->name('resend-otp-aktivasi');
+
+//---------------------------------Admin-------------------------------------//
+//-----Konfigurasi-----//
+Route::middleware('auth:web')->get('/konfigurasi', [DashboardController::class, 'konfigurasiView'])->name('konfigurasi');
+//Lantai
+Route::middleware('auth:web')->group(function () {
+    Route::get('/lantai', [LantaiController::class, 'index'])->name('lantai');
+    Route::get('/add-lantai', [LantaiController::class, 'addLantai'])->name('add-lantai');
+    Route::post('/add-lantai', [LantaiController::class, 'store'])->name('add-lantai');
+    Route::delete('/delete-lantai/{id}', [LantaiController::class, 'destroy'])->name('delete-lantai');
+});
+
+//Area
+Route::middleware('auth:web')->group(function () {
+    Route::get('/area', [AreaController::class, 'index'])->name('area');
+    Route::get('/add-area', [AreaController::class, 'addArea'])->name('add-area');
+    Route::post('/add-area', [AreaController::class, 'store'])->name('add-area');
+    Route::get('/edit-area/{id}', [AreaController::class, 'editArea'])->name('edit-area');
+    Route::put('/edit-area/{id}', [AreaController::class, 'update'])->name('edit-area');
+    Route::delete('/delete-area/{id}', [AreaController::class, 'destroy'])->name('delete-area');
+});

@@ -25,9 +25,11 @@ class OtpAktivasiMail extends Mailable
 
     public function build()
     {
-        return $this->subject("Verifikasi OTP Aktivasi Akun")
-                    ->view('emails.otp_aktivasi_akun')
-                    ->with(['otp' => $this->otp]);
+        return $this->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->replyTo(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->subject("Verifikasi OTP Aktivasi Akun")
+            ->view('emails.otp_aktivasi_akun')
+            ->with(['otp' => $this->otp]);
     }
 
     /**
