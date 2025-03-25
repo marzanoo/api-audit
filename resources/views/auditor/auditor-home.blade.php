@@ -20,10 +20,10 @@
             <h4 class="text-xl font-bold">Total Area</h4>
             <p class="text-4xl text-green-600 mt-3 font-semibold">{{ $total_area }}</p>
         </div>
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+        <a href="{{ route('audit-answer')}}" class="bg-gray-100 p-4 rounded-lg shadow-md text-center">
             <h4 class="text-xl font-bold">Isi Form Audit</h4>
             <p class="text-2xl text-green-600 mt-3 font-semibold">{{ $total_audit }} Form telah diisi</p>
-        </div>
+        </a>
     </div>
 </div>
 @endsection

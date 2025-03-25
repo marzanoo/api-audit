@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AuditAnswerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DetailAuditAnswerController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\LantaiController;
 use App\Http\Controllers\TemaFormController;
@@ -81,4 +83,16 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/edit-variabel-form/{id}', [VariabelFormController::class, 'editVariabelForm'])->name('edit-variabel-form');
     Route::put('/edit-variabel-form/{id}', [VariabelFormController::class, 'update'])->name('edit-variabel-form');
     Route::delete('/delete-variabel-form/{id}', [VariabelFormController::class, 'destroy'])->name('delete-variabel-form');
+});
+
+//---------------------------------Admin-------------------------------------//
+//Audit Answer
+Route::middleware('auth:web')->group(function () {
+    Route::get('/audit-answer', [AuditAnswerController::class, 'showFormAudit'])->name('audit-answer');
+    Route::post('/audit-answer-insert', [AuditAnswerController::class, 'store'])->name('audit-answer-insert');
+});
+
+//Detail Audit Answer
+Route::middleware('auth:web')->group(function () {
+    Route::get('detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'showFormAuditDetail'])->name('detail-audit-answer');
 });

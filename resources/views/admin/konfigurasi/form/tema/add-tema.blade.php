@@ -15,7 +15,7 @@
     @endif
     <h1 class="text-xl font-bold mb-4">Tambah Tema</h1>
 
-    <form action="{{ route('add-tema-form', $formId) }}" method="POST">
+    <form action="{{ route('add-tema-form', $formId) }}" method="POST" class="max-w-lg mx-auto">
         @csrf
         <div class="mb-4">
             <label for="tema" class="block text-gray-700 font-semibold mb-2">Tema</label>

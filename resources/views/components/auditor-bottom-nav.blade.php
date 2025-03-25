@@ -7,7 +7,7 @@
         </a>
 
         <!-- Isi Form -->
-        <a href="#" class="flex flex-col items-center text-gray-600 hover:text-blue-600">
+        <a href="{{ route('audit-answer') }}" class="flex flex-col items-center text-gray-600 hover:text-blue-600">
             <i class="fas fa-clipboard-list text-xl"></i>
             <span class="text-xs">Isi Form</span>
         </a>
