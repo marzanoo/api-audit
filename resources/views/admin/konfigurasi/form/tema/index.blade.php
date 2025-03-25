@@ -25,7 +25,7 @@
     <h1 class="text-xl font-bold mb-4">Konfigurasi Tema</h1>
 
     {{-- Tombol Tambah Tema --}}
-    <a href="{{ route('add-tema-form', $formId) }}" class="bg-black text-white px-4 py-2 rounded-lg">+ Tambah Form</a>
+    <a href="{{ route('add-tema-form', $formId) }}" class="bg-black text-white px-4 py-2 rounded-lg">+ Tambah Tema</a>
 
     {{-- List Tema --}}
     <div class="mt-4 space-y-4">
@@ -40,7 +40,7 @@
             {{-- Tombol View & Hapus --}}
             <div class="flex gap-2 mt-3">
                 {{-- Tombol View --}}
-                <a href="#" class="bg-cyan-500 text-white px-4 py-2 rounded-lg text-center">
+                <a href="{{ route('variabel-form', $item->id) }}" class="bg-cyan-500 text-white px-4 py-2 rounded-lg text-center">
                     Detail
                 </a>
                 <a href="{{ route('edit-tema-form', $item->id) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-center">

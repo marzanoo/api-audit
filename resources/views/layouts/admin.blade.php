@@ -16,5 +16,6 @@
         @yield('content')
     </main>
     @include('components.admin-bottom-nav')
+    @stack('scripts')
 </body>
 </html>

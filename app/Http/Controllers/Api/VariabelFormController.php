@@ -184,6 +184,14 @@ class VariabelFormController extends Controller
     public function destroy(string $id)
     {
         $variabel = VariabelForm::find($id);
+        if (!$variabel) {
+            return response()->json([
+                'message' => 'Variabel tidak ditemukan',
+            ], 404);
+        }
+        if ($variabel->standar_foto) {
+            Storage::disk('public')->delete($variabel->standar_foto);
+        }
         $variabel->delete();
         return response()->json([
             'message' => 'Variabel berhasil dihapus',

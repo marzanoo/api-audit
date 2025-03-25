@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\LantaiController;
 use App\Http\Controllers\TemaFormController;
+use App\Http\Controllers\VariabelFormController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,4 +71,14 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/edit-tema-form/{id}', [TemaFormController::class, 'editTemaForm'])->name('edit-tema-form');
     Route::put('/edit-tema-form/{id}', [TemaFormController::class, 'update'])->name('edit-tema-form');
     Route::delete('/delete-tema-form/{id}', [TemaFormController::class, 'destroy'])->name('delete-tema-form');
+});
+
+//Variabel Form
+Route::middleware('auth:web')->group(function () {
+    Route::get('/variabel-form/{id}', [VariabelFormController::class, 'index'])->name('variabel-form');
+    Route::get('/add-variabel-form/{id}', [VariabelFormController::class, 'addVariabelForm'])->name('add-variabel-form');
+    Route::post('/add-variabel-form/{id}', [VariabelFormController::class, 'store'])->name('add-variabel-form');
+    Route::get('/edit-variabel-form/{id}', [VariabelFormController::class, 'editVariabelForm'])->name('edit-variabel-form');
+    Route::put('/edit-variabel-form/{id}', [VariabelFormController::class, 'update'])->name('edit-variabel-form');
+    Route::delete('/delete-variabel-form/{id}', [VariabelFormController::class, 'destroy'])->name('delete-variabel-form');
 });
