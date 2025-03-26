@@ -15,7 +15,9 @@
     <main class="container mx-auto p-4 pt-20 pb-20">
         @yield('content')
     </main>
-    @include('components.auditor-bottom-nav')
+    @if (!isset($showBottomNav) || $showBottomNav)
+        @include('components.auditor-bottom-nav')
+    @endif
     @stack('scripts')
 </body>
 </html>

@@ -37,7 +37,7 @@ class DetailAuditAnswerController extends Controller
                     'score' => $detail->score,
                 ];
             });
-        return view('auditor.form-audit.detail.index', compact('detailAuditAnswer', 'auditAnswerId'));
+        return view('auditor.form-audit.detail.index', compact('detailAuditAnswer', 'auditAnswerId'), ['showBottomNav' => false]);
     }
 
     public function submitAnswer(Request $request)
