@@ -3,6 +3,11 @@
 
 @section('content')
 <div class="container mx-auto p-4">
+    @if (session('audit_answer_error'))
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-4">
+            {{ session('audit_answer_error') }}
+        </div>
+    @endif
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <div class="bg-gray-100 px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-800">Isi Form Audit</h2>
@@ -131,7 +136,7 @@
                             disabled
                             class="w-full max-w-md mx-auto py-3 px-6 bg-indigo-600 text-white rounded-lg 
                                    hover:bg-indigo-700 transition duration-300 
-                                   disabled:opacity-50 disabled:cursor-not-allowed">
+                                   disabled:opacity-50 disabled:cursor-not-allowed mb-4">
                         Simpan Seluruh Detail Audit
                     </button>
                 </div>
