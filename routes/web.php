@@ -94,5 +94,6 @@ Route::middleware('auth:web')->group(function () {
 
 //Detail Audit Answer
 Route::middleware('auth:web')->group(function () {
-    Route::get('detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'showFormAuditDetail'])->name('detail-audit-answer');
+    Route::get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'showFormAuditDetail'])->name('detail-audit-answer');
+    Route::post('/detail-audit-answer-insert', [DetailAuditAnswerController::class, 'submitAnswer'])->name('detail-audit-answer-insert');
 });
