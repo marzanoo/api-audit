@@ -15,7 +15,7 @@
                 <span class="text-lg w-2/3">{{ $item->tanggal }}</span>
             </div>
         
-            {{-- Data PIC Area --}}
+            {{-- Data Auditor --}}
             <div class="flex justify-between">
                 <span class="text-lg font-semibold w-1/3">Auditor</span>
                 <span class="text-lg w-2/3">{{ $item->auditor->name }}</span>
