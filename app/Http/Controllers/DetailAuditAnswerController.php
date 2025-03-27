@@ -135,7 +135,7 @@ class DetailAuditAnswerController extends Controller
 
         foreach ($signatures as $type => $signatureFile) {
             if ($signatureFile) {
-                $fileName = time() . '_' . $type . '.' . $signatureFile->getExtension();
+                $fileName = time() . '_' . $type . '_signature.' . $signatureFile->getClientOriginalExtension();
                 $filePath = $signatureFile->storeAs('signatures', $fileName, 'public');
                 $signaturePaths[$type] = $filePath;
             }

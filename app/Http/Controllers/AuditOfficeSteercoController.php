@@ -26,7 +26,7 @@ class AuditOfficeSteercoController extends Controller
     {
         $areaId = $id;
         $lantaiId = Area::find($areaId)->lantai_id;
-        $audit_form = AuditAnswer::with('area:id,area,lantai_id', 'auditor:id,name')->where('area_id', $areaId)->get();
+        $audit_form = AuditAnswer::with('area:id,area,lantai_id', 'auditor:id,name')->where('area_id', $areaId)->orderBy('updated_at', 'desc')->get();
         return view('steerco.audit-office.audit-form', compact('audit_form', 'lantaiId'));
     }
 }
