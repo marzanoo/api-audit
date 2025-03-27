@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuditAnswerController;
+use App\Http\Controllers\AuditOfficeSteercoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailAuditAnswerController;
@@ -85,7 +86,7 @@ Route::middleware('auth:web')->group(function () {
     Route::delete('/delete-variabel-form/{id}', [VariabelFormController::class, 'destroy'])->name('delete-variabel-form');
 });
 
-//---------------------------------Admin-------------------------------------//
+//---------------------------------Auditor-------------------------------------//
 //Audit Answer
 Route::middleware('auth:web')->group(function () {
     Route::get('/audit-answer', [AuditAnswerController::class, 'showFormAudit'])->name('audit-answer');
@@ -96,4 +97,12 @@ Route::middleware('auth:web')->group(function () {
 Route::middleware('auth:web')->group(function () {
     Route::get('/detail-audit-answer/{id}', [DetailAuditAnswerController::class, 'showFormAuditDetail'])->name('detail-audit-answer');
     Route::post('/detail-audit-answer-insert', [DetailAuditAnswerController::class, 'submitAnswer'])->name('detail-audit-answer-insert');
+});
+
+//---------------------------------Steering Committee-------------------------------------//
+//Audit Office
+Route::middleware('auth:web')->group(function () {
+    Route::get('/audit-office-steerco', [AuditOfficeSteercoController::class, 'showLantai'])->name('audit-office-steerco');
+    Route::get('/audit-office-steerco-area/{id}', [AuditOfficeSteercoController::class, 'showArea'])->name('audit-office-steerco-area');
+    Route::get('/audit-office-steerco-audit-form/{id}', [AuditOfficeSteercoController::class, 'showAuditForm'])->name('audit-office-steerco-audit-form');
 });

@@ -22,7 +22,8 @@ class DashboardController extends Controller
         if ($user->role == 1) {
             return view('admin.admin-home');
         } else if ($user->role == 2) {
-            return view('steerco.steerco-home');
+            $total_audit = $this->totalAudit();
+            return view('steerco.steerco-home', compact('total_audit'));
         } else if ($user->role == 3) {
             $total_audit = $this->totalAuditByAuditor();
             return view('auditor.auditor-home', compact('total_area', 'total_audit'));
@@ -42,6 +43,12 @@ class DashboardController extends Controller
     public function totalAuditByAuditor()
     {
         $total_audit = AuditAnswer::where('auditor_id', Auth::user()->id)->count();
+        return $total_audit;
+    }
+
+    public function totalAudit()
+    {
+        $total_audit = AuditAnswer::count();
         return $total_audit;
     }
 }
