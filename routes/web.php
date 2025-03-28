@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuditAnswerController;
+use App\Http\Controllers\AuditOfficeAdminController;
 use App\Http\Controllers\AuditOfficeSteercoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -84,6 +85,13 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/edit-variabel-form/{id}', [VariabelFormController::class, 'editVariabelForm'])->name('edit-variabel-form');
     Route::put('/edit-variabel-form/{id}', [VariabelFormController::class, 'update'])->name('edit-variabel-form');
     Route::delete('/delete-variabel-form/{id}', [VariabelFormController::class, 'destroy'])->name('delete-variabel-form');
+});
+
+//Audit Office
+Route::middleware('auth:web')->group(function () {
+    Route::get('/audit-office-admin', [AuditOfficeAdminController::class, 'showLantai'])->name('audit-office-admin');
+    Route::get('/audit-office-admin-area/{id}', [AuditOfficeAdminController::class, 'showArea'])->name('audit-office-admin-area');
+    Route::get('/audit-office-admin-audit-form/{id}', [AuditOfficeAdminController::class, 'showAuditForm'])->name('audit-office-admin-audit-form');
 });
 
 //---------------------------------Auditor-------------------------------------//

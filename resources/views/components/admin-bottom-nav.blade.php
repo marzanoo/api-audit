@@ -13,7 +13,7 @@
         </a>
 
         <!-- Audit Office -->
-        <a href="#" class="flex flex-col items-center text-gray-600 hover:text-blue-600">
+        <a href="{{ route('audit-office-admin') }}" class="flex flex-col items-center text-gray-600 hover:text-blue-600">
             <i class="fas fa-clipboard-list text-xl"></i>
             <span class="text-xs">Audit Office</span>
         </a>

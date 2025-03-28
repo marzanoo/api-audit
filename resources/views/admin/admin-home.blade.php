@@ -22,7 +22,7 @@
         </div>
         <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
             <h4 class="text-xl font-bold">Audit Office</h4>
-            <a href="#" class="bg-black hover:bg-gray-500 text-white px-4 py-2 rounded mt-3 inline-block">Lihat</a>
+            <a href="{{ route('audit-office-admin') }}" class="bg-black hover:bg-gray-500 text-white px-4 py-2 rounded mt-3 inline-block">Lihat</a>
         </div>
     </div>
 </div>
