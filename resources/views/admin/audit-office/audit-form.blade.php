@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container mx-auto p-4">
-    <a href="{{ route('audit-office-admin-area', $lantaiId) }}" class="text-lg font-semibold flex items-center mb-4">
+    <a href="{{ route('audit-office-admin-area', $lantaiId) }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
         ← Kembali
     </a>
     <h1 class="text-xl font-bold mb-4">Audit Office - Pilih Form</h1>

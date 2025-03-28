@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mx-auto p-4 min-h-screen">
-    <a href="{{ route('area') }}" class="text-lg font-semibold flex items-center mb-4">
+    <a href="{{ route('area') }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
         ← Kembali
     </a>
 
