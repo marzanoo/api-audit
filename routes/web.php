@@ -63,6 +63,7 @@ Route::middleware('auth:web')->group(function () {
 Route::middleware('auth:web')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('edit-user');
+    Route::put('/edit-user/{id}', [UserController::class, 'update'])->name('edit-user');
 });
 
 //-----Form-----//

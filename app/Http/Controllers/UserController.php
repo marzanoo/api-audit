@@ -27,7 +27,7 @@ class UserController extends Controller
             'email' => 'required'
         ]);
 
-        $user = User::Where('email', $request->email)->get();
+        $user = User::Where('email', $request->email)->where('id', '!=', $id)->exists();
         if ($user) {
             return redirect()->route('edit-user', $id)->with(['user_error' => 'Email telah digunakan, Mohon gunakan email lain']);
         }

@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container mx-auto p-4 min-h-screen">
-    <a href="{{ route('area') }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
+    <a href="{{ route('users') }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
         ← Kembali
     </a>
 
@@ -14,7 +14,7 @@
     @endif
     <h1 class="text-xl font-bold mb-4">Ubah User</h1>
 
-    <form action="#" method="POST" class="max-w-lg mx-auto">
+    <form action="{{ route('edit-user', $user->id) }}" method="POST" class="max-w-lg mx-auto">
         @csrf
         @method('PUT')
         <div class="mb-4">
@@ -40,7 +40,7 @@
         </div>
 
         <button type="submit" class="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition duration-200">
-            Ubah Area
+            Ubah User
         </button>
     </form>
 </div>
