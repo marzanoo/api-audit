@@ -49,8 +49,7 @@
                         };
                     @endphp
                     {{ $roleText }}
-                </span>
-                
+                </span>                
             </div>
         
             {{-- Data PIC Area --}}
@@ -62,7 +61,7 @@
             {{-- Tombol Edit & Hapus --}}
             <div class="flex gap-2 mt-3">
                 {{-- Tombol Edit --}}
-                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-center">
+                <a href="{{ route('edit-user', $item->id) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-center">
                     Edit
                 </a>
 
