@@ -8,6 +8,11 @@
             {{ session('audit_answer_error') }}
         </div>
     @endif
+    @if (session('form_audit_success'))
+        <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
+            {{ session('form_audit_success') }}
+        </div>
+    @endif
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <div class="bg-gray-100 px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-800">Isi Form Audit</h2>

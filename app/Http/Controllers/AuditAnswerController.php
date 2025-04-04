@@ -44,6 +44,13 @@ class AuditAnswerController extends Controller
             ]);
         }
 
-        return redirect()->route('detail-audit-answer', $auditAnswerId)->with('form-audit_success', 'Form audit berhasil disimpan');
+        return redirect()->route('detail-audit-answer', $auditAnswerId)->with('form_audit_success', 'Form audit berhasil dibuat');
+    }
+
+    public function deleteAuditForm($id)
+    {
+        $auditAnswer = AuditAnswer::find($id);
+        $auditAnswer->delete();
+        return redirect()->route('form-audit')->with('form_audit_success', 'Form audit berhasil dihapus');
     }
 }

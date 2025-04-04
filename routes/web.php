@@ -10,6 +10,7 @@ use App\Http\Controllers\DetailAuditAnswerController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\LantaiController;
 use App\Http\Controllers\TemaFormController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariabelFormController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,11 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/edit-area/{id}', [AreaController::class, 'editArea'])->name('edit-area');
     Route::put('/edit-area/{id}', [AreaController::class, 'update'])->name('edit-area');
     Route::delete('/delete-area/{id}', [AreaController::class, 'destroy'])->name('delete-area');
+});
+
+//User
+Route::middleware('auth:web')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users');
 });
 
 //-----Form-----//
