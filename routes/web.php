@@ -64,6 +64,9 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('edit-user');
     Route::put('/edit-user/{id}', [UserController::class, 'update'])->name('edit-user');
+    Route::get('/add-user', [UserController::class, 'addUser'])->name('add-user');
+    Route::post('/add-user', [UserController::class, 'store'])->name('add-user');
+    Route::delete('/delete-user/{id}', [UserController::class, 'destroy'])->name('delete-user');
 });
 
 //-----Form-----//

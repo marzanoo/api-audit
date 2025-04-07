@@ -25,7 +25,7 @@
     <h1 class="text-xl font-bold mb-4">Konfigurasi User</h1>
 
     {{-- Tombol Tambah Area --}}
-    <a href="#" class="bg-black text-white px-4 py-2 rounded-lg">+ Tambah User</a>
+    <a href="{{ route('add-user') }}" class="bg-black text-white px-4 py-2 rounded-lg">+ Tambah User</a>
 
     {{-- List Area --}}
     <div class="mt-4 space-y-4">
@@ -66,7 +66,7 @@
                 </a>
 
                 {{-- Tombol Hapus --}}
-                <form action="#" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                <form action="{{ route('delete-user', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg w-full">
