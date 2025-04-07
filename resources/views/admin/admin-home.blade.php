@@ -18,11 +18,11 @@
     <div class="grid grid-cols-2 gap-4">
         <div class="bg-gray-100 p-4 rounded-lg shadow-md text-center">
             <h4 class="text-xl font-bold">Total Audit Selesai</h4>
-            <p class="text-4xl text-green-600 mt-3 font-semibold">20</p>
+            <p class="text-4xl text-green-600 mt-3 font-semibold">{{ $total_audit }}</p>
         </div>
         <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
             <h4 class="text-xl font-bold">Audit Office</h4>
-            <a href="{{ route('audit-office-admin') }}" class="bg-black hover:bg-gray-500 text-white px-4 py-2 rounded mt-3 inline-block">Lihat</a>
+            <a href="{{ route('audit-office-admin') }}" class="bg-black hover:bg-red-900 text-white px-4 py-2 rounded mt-3 inline-block">Lihat</a>
         </div>
     </div>
 </div>

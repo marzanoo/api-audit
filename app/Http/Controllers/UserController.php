@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\CssSelector\Parser\Shortcut\HashParser;
 
 class UserController extends Controller
 {
@@ -26,8 +27,10 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'username' => 'required',
+            'email' => 'required',
+            'password' => 'nullable|min:8',
             'role' => 'required',
-            'email' => 'required'
         ]);
 
         $user = User::Where('email', $request->email)->where('id', '!=', $id)->exists();
@@ -37,8 +40,12 @@ class UserController extends Controller
 
         $user = User::find($id);
         $user->name = $request->name;
+        $user->username = $request->username;
         $user->role = $request->role;
         $user->email = $request->email;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
         $user->save();
 
         return redirect()->route('users')->with(['user_success' => 'User telah berhasil diubah']);

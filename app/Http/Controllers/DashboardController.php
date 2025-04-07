@@ -20,7 +20,8 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         if ($user->role == 1) {
-            return view('admin.admin-home');
+            $total_audit = $this->totalAudit();
+            return view('admin.admin-home', compact('total_audit'));
         } else if ($user->role == 2) {
             $total_audit = $this->totalAudit();
             return view('steerco.steerco-home', compact('total_audit'));
