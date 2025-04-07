@@ -40,4 +40,30 @@ class UserController extends Controller
 
         return redirect()->route('users')->with(['user_success' => 'User telah berhasil diubah']);
     }
+
+    public function addUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'role' => 'required',
+            'email' => 'required'
+        ]);
+
+        $user = User::Where('email', $request->email)->exists();
+        if ($user) {
+            return redirect()->route('add-user')->with(['user_error' => 'Email telah digunakan, Mohon gunakan email lain']);
+        }
+
+        User::create([
+            'name' => $request->name,
+            'role' => $request->role,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->route('users')->with(['user_success' => 'User telah berhasil ditambahkan', 'user_success_data' => [
+            'name' => $request->name,
+            'role' => $request->role,
+            'email' => $request->email
+        ]]);
+    }
 }
