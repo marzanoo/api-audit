@@ -13,6 +13,9 @@
             {{ session('form_audit_success') }}
         </div>
     @endif
+    <a href="{{ route('audit-office-steerco-audit-form', $auditAnswer->area_id) }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
+        ← Kembali
+    </a>
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <div class="bg-gray-100 px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-800">Audit Office</h2>
@@ -82,6 +85,17 @@
                 </div>
             @endforeach
 
+            <div class="mt-6">
+                <div class="flex items-center">
+                    <h5 class="text-md font-medium text-gray-700">Total Score:</h5>
+                    <span class="font-bold text-md mx-2">{{ $auditAnswer->total_score }}</span>
+                </div>
+            
+                <div class="flex items-center mt-2">
+                    <h5 class="text-md font-medium text-gray-700">Grade:</h5>
+                    <span class="font-bold text-md mx-2">{{ $grade }}</span>
+                </div>
+            </div>            
             <!-- Signatures Section -->
             @if (isset($signatures))
                 <div class="bg-gray-50 rounded-xl p-6 shadow-md border border-gray-100 mt-8">

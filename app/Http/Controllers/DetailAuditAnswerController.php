@@ -202,7 +202,28 @@ class DetailAuditAnswerController extends Controller
         });
 
         $signatures = DetailSignatureAuditAnswer::where('audit_answer_id', $auditAnswerId)->first();
+        $auditAnswer = AuditAnswer::where('id', $auditAnswerId)->first();
+        $grade = $this->getGrade($auditAnswerId);
 
-        return view('steerco.audit-office.detail.index', compact('formattedData', 'signatures'));
+        return view('steerco.audit-office.detail.index', compact('formattedData', 'signatures', 'auditAnswer', 'grade'));
+    }
+
+    public function getGrade($id)
+    {
+        $grade = "";
+        $auditAnswer = AuditAnswer::where('id', $id)->first();
+        if ($auditAnswer->total_score <= 2) {
+            return $grade = "Diamond";
+        } else if ($auditAnswer->total_score <= 4) {
+            return $grade = "Platinum";
+        } else if ($auditAnswer->total_score <= 6) {
+            return $grade = "Gold";
+        } else if ($auditAnswer->total_score <= 8) {
+            return $grade = "Silver";
+        } else if ($auditAnswer->total_score >= 9) {
+            return $grade = "Bronze";
+        } else {
+            return $grade = "Unknown";
+        }
     }
 }
