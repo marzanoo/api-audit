@@ -109,7 +109,6 @@ class DetailAuditAnswerController extends Controller
 
     private function processImageUploads($detailAuditAnswerId, Request $request)
     {
-        // Get all files with the naming pattern image_path_[detailId][]
         $inputName = 'image_path_' . $detailAuditAnswerId;
 
         if (!$request->hasFile($inputName)) {
@@ -118,9 +117,11 @@ class DetailAuditAnswerController extends Controller
 
         $imageFiles = $request->file($inputName);
 
-        foreach ($imageFiles as $imageFile) {
+        foreach ($imageFiles as $index => $imageFile) {
             if ($imageFile->isValid()) {
-                $fileName = time() . '_' . $imageFile->getClientOriginalName();
+                // Create a truly unique filename using microtime and a random component
+                $uniqueId = microtime(true) . '_' . uniqid();
+                $fileName = $uniqueId . '_' . $imageFile->getClientOriginalName();
                 $filePath = $imageFile->storeAs('uploads', $fileName, 'public');
 
                 DetailFotoAuditAnswer::create([
@@ -158,5 +159,50 @@ class DetailAuditAnswerController extends Controller
                 'facilitator_signature' => $signaturePaths['facilitator_signature'] ?? null
             ]);
         }
+    }
+
+    public function getAuditAnswer($id)
+    {
+        $auditAnswerId = $id;
+        $data = DetailAuditAnswer::with([
+            'variabel.temaForm.form',
+            'detailAuditeeAnswer.userAuditee',
+            'detailFotoAuditAnswer'
+        ])->where('audit_answer_id', $auditAnswerId)->get();
+
+        if ($data->isEmpty() || $data->contains(fn($detail) => $detail->audit_answer_id != $auditAnswerId)) {
+            //
+        }
+
+        $formattedData = $data->map(function ($detail) {
+            return [
+                'id' => $detail->id,
+                'audit_answer_id' => $detail->audit_answer_id,
+                'variabel_form_id' => $detail->variabel_form_id,
+                'variabel' => $detail->variabel->variabel,
+                'standar_variabel' => $detail->variabel->standar_variabel,
+                'standar_foto' => $detail->variabel->standar_foto,
+                'tema' => $detail->variabel->temaForm->tema,
+                'kategori' => $detail->variabel->temaForm->form->kategori,
+                'score' => $detail->score,
+                'auditees' => $detail->detailAuditeeAnswer->map(function ($auditee) {
+                    return [
+                        'id' => $auditee->id,
+                        'auditee' => $auditee->userAuditee ? $auditee->userAuditee->emp_name : $auditee->auditee_name,
+                        'temuan' => $auditee->temuan
+                    ];
+                }),
+                'images' => $detail->detailFotoAuditAnswer->map(function ($foto) {
+                    return [
+                        'id' => $foto->id,
+                        'image_path' => $foto->image_path
+                    ];
+                }),
+            ];
+        });
+
+        $signatures = DetailSignatureAuditAnswer::where('audit_answer_id', $auditAnswerId)->first();
+
+        return view('steerco.audit-office.detail.index', compact('formattedData', 'signatures'));
     }
 }

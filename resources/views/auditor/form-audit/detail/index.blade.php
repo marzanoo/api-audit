@@ -37,7 +37,7 @@
                             </p>
                             <div class="text-lg w-2/3">
                                 @if ($detail['standar_foto'])
-                                    <img src="{{ asset('storage/' . $detail['standar_foto']) }}" alt="Foto Variabel" class="w-32 h-32 object-cover">
+                                    <img src="{{ asset('storage/' . $detail['standar_foto']) }}" loading="eager" alt="Foto Variabel" class="w-32 h-32 object-cover">
                                 @else
                                     Tidak ada foto
                                 @endif

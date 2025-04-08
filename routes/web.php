@@ -124,4 +124,5 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/audit-office-steerco', [AuditOfficeSteercoController::class, 'showLantai'])->name('audit-office-steerco');
     Route::get('/audit-office-steerco-area/{id}', [AuditOfficeSteercoController::class, 'showArea'])->name('audit-office-steerco-area');
     Route::get('/audit-office-steerco-audit-form/{id}', [AuditOfficeSteercoController::class, 'showAuditForm'])->name('audit-office-steerco-audit-form');
+    Route::get('/detail-audit-office-steerco-audit-form/{id}', [DetailAuditAnswerController::class, 'getAuditAnswer'])->name('detail-audit-office-steerco-audit-form');
 });
