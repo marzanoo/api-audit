@@ -18,7 +18,7 @@
             <h2 class="text-xl font-semibold text-gray-800">Isi Form Audit</h2>
         </div>
         <div class="space-y-4">
-            <form action="{{ route('detail-audit-answer-insert', $auditAnswerId) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="{{ route('detail-audit-answer-insert', $auditAnswerId) }}" method="POST" enctype="multipart/form-data" class="space-y-6" id="auditForm">
                 @csrf
                 <input type="hidden" name="audit_answer_id" value="{{ $auditAnswerId }}">
                 @foreach ($detailAuditAnswer as $detail)
@@ -53,7 +53,6 @@
                             <div class="flex items-center mb-4">
                                 <input 
                                     type="file" 
-                                    name="image_path[{{ $detail['id'] }}][]" 
                                     id="fileInput-{{ $detail['id'] }}"
                                     accept="image/*" 
                                     multiple 
@@ -86,8 +85,6 @@
                         
                         <!-- Tempat untuk Menampilkan Data yang Ditambahkan -->
                         <div id="data-list-{{ $detail['id'] }}" class="mt-4 space-y-2"></div>
-                        <input type="hidden" name="tertuduh_{{ $detail['id'] }}[]" class="tertuduh-input" value="">
-                        <input type="hidden" name="temuan_{{ $detail['id'] }}[]" class="temuan-input" value="">
                                      
                         <div class="mb-2 mt-4">
                             <label for="text-lg font-semibold w-1/3">Score</label>
@@ -275,6 +272,16 @@
             });
         });
     });
+
+    // Inisialisasi totalScore untuk setiap kategori
+    let totalScore = {};
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("[data-detail-id]").forEach(section => {
+            const detailId = section.getAttribute("data-detail-id");
+            totalScore[detailId] = 0; // Set nilai awal 0 untuk setiap kategori
+        });
+    });
+
     function tambahTertuduh(detailId) {
         const tertuduhInput = document.getElementById(`tertuduh-${detailId}`);
         const temuanInput = document.getElementById(`temuan-${detailId}`);
@@ -284,12 +291,6 @@
         const tertuduh = tertuduhInput.value.trim();
         const temuan = temuanInput.value.trim();
 
-        const hiddenTertuduhInput = document.querySelector(`.tertuduh-input[name="tertuduh_${detailId}[]"]`);
-        const hiddenTemuanInput = document.querySelector(`.temuan-input[name="temuan_${detailId}[]"]`);
-        
-        hiddenTertuduhInput.value = tertuduh;
-        hiddenTemuanInput.value = temuan;
-
         // Jika kedua input kosong, tampilkan alert
         if (tertuduh === "" && temuan === "") {
             alert("Minimal satu input harus diisi!");
@@ -298,13 +299,36 @@
 
         const temuanValue = temuan !== "" ? parseInt(temuan, 10) : 0; // Jika temuan kosong, anggap 0
 
+        // Buat unique ID untuk entri ini
+        const entryId = Date.now().toString();
+
+        // Buat input hidden baru untuk setiap entri
+        const form = document.getElementById('auditForm');
+        
+        // Buat input hidden baru untuk tertuduh
+        const newTertuduhInput = document.createElement('input');
+        newTertuduhInput.type = 'hidden';
+        newTertuduhInput.name = `tertuduh_${detailId}[]`;
+        newTertuduhInput.value = tertuduh;
+        newTertuduhInput.dataset.entryId = entryId;
+        form.appendChild(newTertuduhInput);
+        
+        // Buat input hidden baru untuk temuan
+        const newTemuanInput = document.createElement('input');
+        newTemuanInput.type = 'hidden';
+        newTemuanInput.name = `temuan_${detailId}[]`;
+        newTemuanInput.value = temuan;
+        newTemuanInput.dataset.entryId = entryId;
+        form.appendChild(newTemuanInput);
+
         // Buat elemen baru untuk daftar
         const dataItem = document.createElement("div");
         dataItem.classList.add("flex", "justify-between", "items-center", "bg-gray-100", "p-2", "rounded-lg", "shadow-sm");
+        dataItem.dataset.entryId = entryId;
 
         dataItem.innerHTML = `
             <span class="text-gray-700">${tertuduh || "(Tanpa Nama)"} - Temuan: ${temuanValue}</span>
-            <button type="button" onclick="hapusTertuduh(this, ${temuanValue}, '${detailId}')" class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-700">Hapus</button>
+            <button type="button" onclick="hapusTertuduh(this, ${temuanValue}, '${detailId}', '${entryId}')" class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-700">Hapus</button>
         `;
 
         dataList.appendChild(dataItem);
@@ -320,53 +344,79 @@
         temuanInput.value = "";
     }
 
-    function hapusTertuduh(button, temuanValue, detailId) {
+    function hapusTertuduh(button, temuanValue, detailId, entryId) {
+        // Hapus elemen dari UI
         button.parentElement.remove();
+
+        // Hapus input hidden terkait
+        document.querySelector(`input[name="tertuduh_${detailId}[]"][data-entry-id="${entryId}"]`).remove();
+        document.querySelector(`input[name="temuan_${detailId}[]"][data-entry-id="${entryId}"]`).remove();
 
         // Kurangi score saat menghapus data
         totalScore[detailId] -= temuanValue;
         document.getElementById(`inputScore-${detailId}`).value = totalScore[detailId];
     }
 
-    // Inisialisasi totalScore untuk setiap kategori
-    let totalScore = {};
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll("[data-detail-id]").forEach(section => {
-            const detailId = section.getAttribute("data-detail-id");
-            totalScore[detailId] = 0; // Set nilai awal 0 untuk setiap kategori
-        });
-    });
     function handleFileSelect(event, detailId) {
         const files = event.target.files;
         const previewContainer = document.getElementById(`image-preview-container-${detailId}`);
         
+        // Create a separate input for each file to prevent overwriting
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const reader = new FileReader();
             
+            // Create a unique ID for this file
+            const fileId = Date.now() + '-' + i;
+            
             reader.onload = function(e) {
+                // Create container for image preview
                 const imageWrapper = document.createElement('div');
                 imageWrapper.className = 'relative';
+                imageWrapper.dataset.fileId = fileId;
                 
+                // Create the image preview
                 const image = document.createElement('img');
                 image.src = e.target.result;
                 image.className = 'w-32 h-32 object-cover rounded-lg shadow-md';
                 
+                // Create delete button
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '&times;';
-                deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-black rounded-xl w-6 h-6 flex items-center justify-center';
+                deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
+                deleteButton.type = 'button';
+                
+                // Create a hidden file input for each image
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'file';
+                hiddenInput.name = `image_path_${detailId}[]`;
+                hiddenInput.className = 'hidden';
+                hiddenInput.dataset.fileId = fileId;
+                
+                // Create a DataTransfer object to add the file
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                hiddenInput.files = dataTransfer.files;
+                
+                // Add delete functionality
                 deleteButton.onclick = function() {
                     previewContainer.removeChild(imageWrapper);
+                    document.querySelector(`input[data-file-id="${fileId}"]`).remove();
                 };
                 
+                // Add elements to the container
                 imageWrapper.appendChild(image);
                 imageWrapper.appendChild(deleteButton);
+                imageWrapper.appendChild(hiddenInput);
                 
                 previewContainer.appendChild(imageWrapper);
             };
             
             reader.readAsDataURL(file);
         }
+        
+        // Clear the original file input to prevent duplication
+        event.target.value = "";
     }
 </script>
 @endpush

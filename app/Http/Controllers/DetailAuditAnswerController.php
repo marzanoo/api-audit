@@ -60,10 +60,8 @@ class DetailAuditAnswerController extends Controller
                     $request->input('temuan_' . $detailAuditAnswerId, [])
                 );
 
-                $this->processImageUploads(
-                    $detailAuditAnswerId,
-                    $request->file('image_path', [])
-                );
+                // Pass the entire request to processImageUploads
+                $this->processImageUploads($detailAuditAnswerId, $request);
             }
 
             $auditAnswer = AuditAnswer::findOrFail($auditAnswerId);
@@ -108,18 +106,28 @@ class DetailAuditAnswerController extends Controller
             ]);
         }
     }
-    private function processImageUploads($detailAuditAnswerId, $imageFiles)
+
+    private function processImageUploads($detailAuditAnswerId, Request $request)
     {
-        if (!isset($imageFiles[$detailAuditAnswerId])) return;
+        // Get all files with the naming pattern image_path_[detailId][]
+        $inputName = 'image_path_' . $detailAuditAnswerId;
 
-        foreach ($imageFiles[$detailAuditAnswerId] as $imageFile) {
-            $fileName = time() . '_' . $imageFile->getClientOriginalName();
-            $filePath = $imageFile->storeAs('uploads', $fileName, 'public');
+        if (!$request->hasFile($inputName)) {
+            return;
+        }
 
-            DetailFotoAuditAnswer::create([
-                'detail_audit_answer_id' => $detailAuditAnswerId,
-                'image_path' => $filePath
-            ]);
+        $imageFiles = $request->file($inputName);
+
+        foreach ($imageFiles as $imageFile) {
+            if ($imageFile->isValid()) {
+                $fileName = time() . '_' . $imageFile->getClientOriginalName();
+                $filePath = $imageFile->storeAs('uploads', $fileName, 'public');
+
+                DetailFotoAuditAnswer::create([
+                    'detail_audit_answer_id' => $detailAuditAnswerId,
+                    'image_path' => $filePath
+                ]);
+            }
         }
     }
 
