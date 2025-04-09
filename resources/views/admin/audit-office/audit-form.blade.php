@@ -24,7 +24,7 @@
             {{-- Lihat--}}
             <div class="flex gap-2 mt-3 justify-end">
                 {{-- Tombol Lihat --}}
-                <a href="#" class="bg-red-900 text-white px-4 py-2 rounded-lg text-center">
+                <a href="{{ route('detail-audit-office-admin-audit-form', $item->id) }}" class="bg-red-900 text-white px-4 py-2 rounded-lg text-center">
                     Lihat
                 </a>
             </div>

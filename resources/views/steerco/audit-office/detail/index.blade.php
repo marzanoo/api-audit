@@ -8,9 +8,9 @@
             {{ session('audit_office_error') }}
         </div>
     @endif
-    @if (session('form_audit_success'))
+    @if (session('audit_office_success'))
         <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
-            {{ session('form_audit_success') }}
+            {{ session('audit_office_success') }}
         </div>
     @endif
     <a href="{{ route('audit-office-steerco-audit-form', $auditAnswer->area_id) }}" class="text-lg font-semibold flex items-center mb-4 w-fit">
