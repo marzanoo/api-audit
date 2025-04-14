@@ -54,14 +54,63 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let deviceId = localStorage.getItem('device_id');
-        
+            // Try to get device ID from multiple sources
+            let deviceId = localStorage.getItem('device_id') || 
+                          getCookie('device_id');
+            
             if (!deviceId) {
-                deviceId = (Math.random() + 1).toString(36).substring(7) + Date.now();
+                // Create a more stable fingerprint using multiple browser properties
+                const screenPrint = `${screen.height}x${screen.width}x${screen.colorDepth}`;
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const languages = navigator.languages ? navigator.languages.join(',') : navigator.language;
+                const cpuCores = navigator.hardwareConcurrency || 'unknown';
+                const deviceMemory = navigator.deviceMemory || 'unknown';
+                const userAgent = navigator.userAgent;
+                
+                // Create a hashcode from these combined values
+                const rawFingerprint = `${screenPrint}|${timeZone}|${languages}|${cpuCores}|${deviceMemory}|${userAgent}`;
+                deviceId = hashCode(rawFingerprint);
+                
+                // Store in multiple locations
                 localStorage.setItem('device_id', deviceId);
+                setCookie('device_id', deviceId, 365 * 5); // 5 years
             }
-        
+            
             document.getElementById("device_id").value = deviceId;
+            
+            // Helper functions
+            function hashCode(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32bit integer
+                }
+                return hash.toString(36) + Date.now().toString(36).substring(2, 5);
+            }
+            
+            function setCookie(name, value, days) {
+                const d = new Date();
+                d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+                const expires = "expires=" + d.toUTCString();
+                document.cookie = name + "=" + value + ";" + expires + ";path=/";
+            }
+            
+            function getCookie(name) {
+                const cname = name + "=";
+                const decodedCookie = decodeURIComponent(document.cookie);
+                const ca = decodedCookie.split(';');
+                for(let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(cname) == 0) {
+                        return c.substring(cname.length, c.length);
+                    }
+                }
+                return "";
+            }
         });
     </script>
 </body>

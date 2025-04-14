@@ -50,7 +50,8 @@ class AuthController extends Controller
             return back()->with(['login_error' => 'Akun hanya bisa digunakan di perangkat pertama yang terdaftar.']);
         }
 
-        Cookie::queue('device_id', $browserDeviceId, 60 * 24 * 365);
+        // Extended cookie duration to 5 years
+        Cookie::queue('device_id', $browserDeviceId, 60 * 24 * 365 * 5);
 
         return redirect()->route('dashboard')->with(['login_success' => 'Login berhasil.']);
     }

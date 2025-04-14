@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\AuditAnswerController;
+use App\Http\Controllers\Api\AuditOfficeAdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DetailAuditAnswerController;
 use App\Http\Controllers\Api\FormController;
@@ -85,6 +86,8 @@ Route::middleware('auth:api')->post('/detail-audit-answer/{auditAnswerId}/detail
 Route::middleware('auth:api')->post('/detail-audit-answer/upload-photo/', [DetailAuditAnswerController::class, 'uploadPhoto']);
 Route::middleware('auth:api')->get('/detail-audit-answer-show/{auditAnswerId}', [DetailAuditAnswerController::class, 'getAuditAnswer']);
 Route::middleware('auth-api')->post('/detail-audit-answer/upload-signature/', [DetailAuditAnswerController::class, 'uploadSignature']);
+Route::middleware('auth:api')->get('/audit-office/detail/{id}', [AuditOfficeAdminController::class, 'getDetailAuditAnswerForExport']);
+Route::middleware('auth:api')->get('/audit-office/download/{id}', [DetailAuditAnswerController::class, 'downloadAuditExcel']);
 
 
 // Route::get('/aktivasi-berhasil', [AuthController::class, 'index'])->name('aktivasi-berhasil');
