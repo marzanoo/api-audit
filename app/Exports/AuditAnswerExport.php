@@ -63,7 +63,7 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
             // Tambahkan temuan auditees jika ada
             $temuan = '';
             foreach ($detail['auditees'] as $auditee) {
-                $temuan .= $auditee['auditee'] . ': ' . $auditee['temuan'] . "\n";
+                $temuan .= $auditee['name'] . ': ' . $auditee['temuan'] . "\n";
             }
 
             $row = [
