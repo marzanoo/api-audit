@@ -28,25 +28,64 @@ class PasswordResetController extends Controller
         ]);
     }
 
+    public function verifyOtpReset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan'
+            ], 404);
+        }
+
+        if ($user->otp != $request->otp || Carbon::now()->gt($user->otp_expires_at)) {
+            return response()->json([
+                'message' => 'OTP salah atau kadaluarsa'
+            ]);
+        }
+
+        $user->otp = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Verifikasi OTP berhasil, silahkan reset password'
+        ]);
+    }
+
+    public function resendOtpReset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan'
+            ]);
+        }
+
+        $user->generateOtpReset();
+
+        return response()->json(['message' => 'OTP berhasil dikirim ulang ke email anda.']);
+    }
+
     public function resetPassword(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'otp' => 'required',
             'password' => 'required|confirmed|min:8'
         ]);
 
         $user = User::where('email', $request->email)->first();
 
-        if ($user->otp != $request->otp || Carbon::now()->gt($user->otp_expires_at)) {
-            return response()->json([
-                'message' => 'OTP salah atau kadaluarsa'
-            ], 400);
-        }
-
         // hapus otp setelah verifikasi berhasil
-        $user->otp = null;
-        $user->otp_expires_at = null;
         $user->password = Hash::make($request->password);
         $user->save();
 
