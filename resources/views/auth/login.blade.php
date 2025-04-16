@@ -24,6 +24,10 @@
             <p class="text-green-500 mb-4">{{ session('aktivasi_success') }}</p>
         @endif
 
+        @if (session('reset_success'))
+            <p class="text-green-500 mb-4">{{ session('reset_success') }}</p>
+        @endif
+
         <!-- Form -->
         <form action="{{ url('login') }}" method="POST">
             @csrf
@@ -35,9 +39,12 @@
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
             </div>
 
-            <div class="mb-4">
+            <div class="mb-2">
                 <input type="password" name="password" placeholder="Password" required 
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+            </div>
+            <div class="flex mb-4 text-sm">
+                <a href="{{ route('reset-password') }}" class="text-blue-500 font-semibold ml-1">Lupa Password?</a>
             </div>
 
             <!-- Register Link -->

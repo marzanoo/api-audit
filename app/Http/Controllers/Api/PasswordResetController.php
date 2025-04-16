@@ -20,7 +20,7 @@ class PasswordResetController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-        
+
         $user->generateOtpReset();
 
         return response()->json([
@@ -28,11 +28,12 @@ class PasswordResetController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request) {
+    public function resetPassword(Request $request)
+    {
         $request->validate([
             'email' => 'required|email|exists:users,email',
             'otp' => 'required',
-            'password' => 'required|min:8'
+            'password' => 'required|confirmed|min:8'
         ]);
 
         $user = User::where('email', $request->email)->first();

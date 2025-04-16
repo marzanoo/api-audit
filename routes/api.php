@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\LantaiController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\TemaFormController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VariabelFormController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -88,6 +89,12 @@ Route::middleware('auth:api')->get('/detail-audit-answer-show/{auditAnswerId}', 
 Route::middleware('auth-api')->post('/detail-audit-answer/upload-signature/', [DetailAuditAnswerController::class, 'uploadSignature']);
 Route::middleware('auth:api')->get('/audit-office/detail/{id}', [AuditOfficeAdminController::class, 'getDetailAuditAnswerForExport']);
 Route::middleware('auth:api')->get('/audit-office/download/{id}', [AuditOfficeAdminController::class, 'downloadAuditExcel']);
+//User
+Route::middleware('auth:api')->get('/users', [UserController::class, 'index']);
+Route::middleware('auth:api')->get('/user/{id}', [UserController::class, 'show']);
+Route::middleware('auth:api')->post('/user', [UserController::class, 'store']);
+Route::middleware('auth:api')->put('/user/{id}', [UserController::class, 'update']);
+Route::middleware('auth:api')->delete('user/{id}', [UserController::class, 'destroy']);
 
 
 // Route::get('/aktivasi-berhasil', [AuthController::class, 'index'])->name('aktivasi-berhasil');
