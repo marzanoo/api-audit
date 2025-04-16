@@ -107,4 +107,13 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users')->with(['user_success' => 'User telah berhasil dihapus']);
     }
+
+    public function resetDeviceId($id)
+    {
+        $user = User::find($id);
+        $user->device_id = null;
+        $user->save();
+
+        return redirect()->route('users')->with(['user_success' => "Device Id " . $user->name . " berhasil direset"]);
+    }
 }

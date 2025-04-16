@@ -73,6 +73,14 @@
                         Hapus
                     </button>
                 </form>
+
+                <form action="{{ route('reset-device', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="bg-red-900 text-white px-4 py-2 rounded-lg w-full">
+                        Reset Device
+                    </button>
+                </form>
             </div>
         </div>
         @endforeach

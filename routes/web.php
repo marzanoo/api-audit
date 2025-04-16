@@ -74,6 +74,7 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/add-user', [UserController::class, 'addUser'])->name('add-user');
     Route::post('/add-user', [UserController::class, 'store'])->name('add-user');
     Route::delete('/delete-user/{id}', [UserController::class, 'destroy'])->name('delete-user');
+    Route::put('/reset-device/{id}', [UserController::class, 'resetDeviceId'])->name('reset-device');
 });
 
 //-----Form-----//
