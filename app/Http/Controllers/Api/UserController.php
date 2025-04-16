@@ -126,4 +126,13 @@ class UserController extends Controller
             'message' => 'User berhasil dihapus'
         ]);
     }
+
+    public function resetDeviceId($id)
+    {
+        $user = User::find($id);
+        $user->device_id = null;
+        $user->save();
+
+        return response()->json(['message' => 'Device Id ' . $user->name . ' berhasil direset']);
+    }
 }
