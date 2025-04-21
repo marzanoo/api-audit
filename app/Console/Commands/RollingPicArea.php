@@ -18,67 +18,71 @@ class RollingPicArea extends Command
         $areas = Area::all();
         $areaCount = $areas->count();
 
-        // Departemen dan emp_id yang tidak boleh dipakai
+        // 1. Filter karyawan
         $excludedDepts = ['GSO', 'ASD'];
         $excludedEmpName = 'VACANT';
 
-        // Ambil karyawan yang dept-nya tidak termasuk excluded dan emp_id-nya bukan VACANT
         $filteredKaryawans = Karyawan::whereNotIn('dept', $excludedDepts)
             ->where('emp_name', '!=', $excludedEmpName)
             ->get();
 
-        // Grouping by dept
+        // 2. Group by dept
         $karyawansByDept = $filteredKaryawans->groupBy('dept');
         $deptCount = $karyawansByDept->count();
 
         if ($deptCount > $areaCount) {
-            $this->error('Jumlah departemen (setelah filter) lebih banyak dari jumlah area. Tidak bisa rolling!');
+            $this->error("Jumlah dept ($deptCount) lebih banyak dari jumlah area ($areaCount). Rolling gagal.");
             return 1;
         }
 
-        // Hitung distribusi area per dept
+        // 3. Hitung quota per dept
         $baseQuota = intdiv($areaCount, $deptCount);
         $extra = $areaCount % $deptCount;
+
+        // 4. Ambil emp_id yang sudah jadi PIC sebelumnya
+        $existingPics = Area::pluck('pic_area')->toArray();
 
         $newAssignments = [];
 
         foreach ($karyawansByDept as $dept => $karyawans) {
-            $shuffled = $karyawans->shuffle();
+            // Filter emp_id yang belum pernah jadi PIC
+            $available = $karyawans->filter(function ($k) use ($existingPics) {
+                return !in_array($k->emp_id, $existingPics);
+            })->shuffle();
 
+            // Hitung jatah dept ini
             $quota = $baseQuota + ($extra > 0 ? 1 : 0);
-            $extra--;
+            if ($extra > 0) $extra--;
 
-            if ($shuffled->count() < $quota) {
-                $this->error("Dept $dept tidak punya cukup karyawan untuk memenuhi $quota PIC.");
+            // Cek apakah cukup kandidat
+            if ($available->count() < $quota) {
+                $this->error("Dept $dept tidak punya cukup karyawan baru untuk jatah $quota PIC.");
                 return 1;
             }
 
+            // Ambil sejumlah quota
             for ($i = 0; $i < $quota; $i++) {
-                $newAssignments[] = $shuffled->get($i)->emp_id;
+                $newAssignments[] = $available->get($i)->emp_id;
             }
         }
 
-        // Ambil pic_area lama
-        $existingPics = Area::pluck('pic_area')->toArray();
-        $newAssignments = collect($newAssignments)
-            ->reject(fn($empId) => in_array($empId, $existingPics))
-            ->shuffle();
-
-        if ($newAssignments->count() < $areaCount) {
-            $this->error('Tidak cukup karyawan unik (yang belum jadi PIC) untuk rolling semua area!');
+        // Final check
+        if (count($newAssignments) < $areaCount) {
+            $this->error("Tidak cukup emp_id unik untuk rolling semua area!");
             return 1;
         }
 
-        // Rolling ke area
+        // 5. Rolling ke area
+        $newAssignments = collect($newAssignments)->shuffle();
+
         foreach ($areas as $area) {
             $area->pic_area = $newAssignments->pop();
             $area->save();
 
-            // Logging detail (optional)
             $this->info("Area {$area->nama_area} diisi oleh emp_id {$area->pic_area}");
         }
 
-        $this->info('Rolling PIC selesai dengan pengecualian GSO, ASD, dan VACANT!');
+        $this->info("Rolling PIC selesai sukses!");
         return 0;
     }
 }
