@@ -19,14 +19,16 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
 {
     protected $formattedData;
     protected $auditAnswer;
+    protected $signatures;
     protected $grade;
     protected $rowHeights = [];
 
-    public function __construct($formattedData, $auditAnswer, $grade)
+    public function __construct($formattedData, $auditAnswer, $grade, $signatures = null)
     {
         $this->formattedData = $formattedData;
         $this->auditAnswer = $auditAnswer;
         $this->grade = $grade;
+        $this->signatures = $signatures;
     }
 
     /**
@@ -63,7 +65,8 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
             // Tambahkan temuan auditees jika ada
             $temuan = '';
             foreach ($detail['auditees'] as $auditee) {
-                $temuan .= $auditee['name'] . ': ' . $auditee['temuan'] . "\n";
+                $nameKey = isset($auditee['auditee']) ? 'auditee' : 'name';
+                $temuan .= $auditee[$nameKey] . ': ' . $auditee['temuan'] . "\n";
             }
 
             $row = [
@@ -124,6 +127,77 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
             'Foto Temuan' => ''
         ];
 
+        $data[] = [
+            'Kategori' => '',
+            'Tema' => '',
+            'Standar' => '',
+            'Foto Standar' => '',
+            'Variabel' => '',
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
+        // Tambahkan header tanda tangan
+        $data[] = [
+            'Kategori' => 'TANDA TANGAN',
+            'Tema' => '',
+            'Standar' => '',
+            'Foto Standar' => '',
+            'Variabel' => '',
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
+        // Tambahkan row untuk tanda tangan (3 kolom)
+        $data[] = [
+            'Kategori' => '',
+            'Tema' => '',
+            'Standar' => '',
+            'Foto Standar' => '',
+            'Variabel' => '',
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
+        // Tambahkan row kosong untuk ruang tanda tangan
+        $data[] = [
+            'Kategori' => 'Auditor:',
+            'Tema' => '',
+            'Standar' => 'Fasilitator:',
+            'Foto Standar' => '',
+            'Variabel' => 'Auditee:',
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
+        // Tambahkan nama-nama penanda tangan
+        $data[] = [
+            'Kategori' => $this->auditAnswer->auditor->name ?? 'N/A',
+            'Tema' => '',
+            'Standar' => $this->signatures->manager_name ?? 'N/A',
+            'Foto Standar' => '',
+            'Variabel' => $this->signatures->auditee_name ?? 'N/A',
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
+        // Tambahkan tanggal tanda tangan
+        $data[] = [
+            'Kategori' => 'Tanggal: ' . ($this->auditAnswer->created_at ? $this->auditAnswer->created_at->format('d-m-Y') : 'N/A'),
+            'Tema' => '',
+            'Standar' => 'Tanggal: ' . ($this->auditAnswer->created_at ? $this->auditAnswer->created_at->format('d-m-Y') : 'N/A'),
+            'Foto Standar' => '',
+            'Variabel' => 'Tanggal: ' . ($this->auditAnswer->created_at ? $this->auditAnswer->created_at->format('d-m-Y') : 'N/A'),
+            'Score' => '',
+            'Temuan' => '',
+            'Foto Temuan' => ''
+        ];
+
         return collect($data);
     }
 
@@ -169,14 +243,50 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
 
         // Style untuk baris data
         $dataStartRow = 4;
-        $dataEndRow = $lastRow - 2;
+        $dataEndRow = $lastRow - 9; // Adjusted for additional signature rows
         $sheet->getStyle('A' . $dataStartRow . ':' . $lastColumn . $dataEndRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // Style untuk total score dan grade
-        $totalScoreRow = $lastRow - 1;
-        $gradeRow = $lastRow;
+        $totalScoreRow = $lastRow - 8;
+        $gradeRow = $lastRow - 7;
         $sheet->getStyle('A' . $totalScoreRow . ':' . $lastColumn . $gradeRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $totalScoreRow . ':' . $lastColumn . $gradeRow)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
+
+        // Style untuk header tanda tangan
+        $signatureHeaderRow = $lastRow - 5;
+        $sheet->getStyle('A' . $signatureHeaderRow)->getFont()->setBold(true);
+        $sheet->getStyle('A' . $signatureHeaderRow . ':' . $lastColumn . $signatureHeaderRow)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
+        $sheet->mergeCells('A' . $signatureHeaderRow . ':H' . $signatureHeaderRow);
+
+        // Style untuk baris tanda tangan
+        $signatureRow = $lastRow - 4;
+        $sheet->getStyle('A' . $signatureRow)->getFont()->setBold(true);
+        $sheet->getStyle('C' . $signatureRow)->getFont()->setBold(true);
+        $sheet->getStyle('E' . $signatureRow)->getFont()->setBold(true);
+
+        // Merge cells untuk setiap bagian tanda tangan
+        $sheet->mergeCells('A' . $signatureRow . ':B' . $signatureRow);
+        $sheet->mergeCells('C' . $signatureRow . ':D' . $signatureRow);
+        $sheet->mergeCells('E' . $signatureRow . ':F' . $signatureRow);
+
+        // Merge cells untuk ruang tanda tangan
+        $signatureImageRow = $lastRow - 3;
+        $sheet->mergeCells('A' . $signatureImageRow . ':B' . $signatureImageRow);
+        $sheet->mergeCells('C' . $signatureImageRow . ':D' . $signatureImageRow);
+        $sheet->mergeCells('E' . $signatureImageRow . ':F' . $signatureImageRow);
+        $sheet->getRowDimension($signatureImageRow)->setRowHeight(150); // Tinggi untuk ruang tanda tangan - INCREASED
+
+        // Merge cells untuk nama tanda tangan
+        $nameSignatureRow = $lastRow - 2;
+        $sheet->mergeCells('A' . $nameSignatureRow . ':B' . $nameSignatureRow);
+        $sheet->mergeCells('C' . $nameSignatureRow . ':D' . $nameSignatureRow);
+        $sheet->mergeCells('E' . $nameSignatureRow . ':F' . $nameSignatureRow);
+
+        // Merge cells untuk tanggal tanda tangan
+        $dateSignatureRow = $lastRow - 1;
+        $sheet->mergeCells('A' . $dateSignatureRow . ':B' . $dateSignatureRow);
+        $sheet->mergeCells('C' . $dateSignatureRow . ':D' . $dateSignatureRow);
+        $sheet->mergeCells('E' . $dateSignatureRow . ':F' . $dateSignatureRow);
 
         return [
             1 => ['font' => ['bold' => true, 'size' => 12]],
@@ -212,11 +322,15 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
 
                 // Set default height untuk baris lain
                 $lastRow = $event->sheet->getHighestRow();
-                for ($i = 4; $i <= $lastRow; $i++) {
+                for ($i = 4; $i <= $lastRow - 9; $i++) { // Adjusted for signature rows
                     if (!isset($this->rowHeights[$i])) {
                         $event->sheet->getRowDimension($i)->setRowHeight(50);
                     }
                 }
+
+                // Set larger height for signature row - UPDATED
+                $signatureImageRow = $lastRow - 3;
+                $event->sheet->getRowDimension($signatureImageRow)->setRowHeight(150);
 
                 // Auto-filter untuk header
                 $event->sheet->setAutoFilter('A1:H1');
@@ -277,6 +391,64 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
             }
 
             $currentRow++;
+        }
+
+        // Add signature images
+        $lastRow = count($this->formattedData) + 7; // Adjust based on the data rows + header rows + grade/score rows
+        $signatureImageRow = $lastRow;
+
+        // Auditor signature - UPDATED
+        if ($this->signatures && $this->signatures->auditor_signature) {
+            $auditorSignPath = storage_path('app/public/' . $this->signatures->auditor_signature);
+            if (file_exists($auditorSignPath)) {
+                $drawing = new Drawing();
+                $drawing->setName('Tanda Tangan Auditor');
+                $drawing->setDescription('Tanda Tangan Auditor');
+                $drawing->setPath($auditorSignPath);
+                $drawing->setHeight(80);
+                $drawing->setWidth(150);
+                $drawing->setResizeProportional(true);
+                $drawing->setCoordinates('A' . $signatureImageRow);
+                $drawing->setOffsetX(10);
+                $drawing->setOffsetY(35); // INCREASED from 10 to 35
+                $drawings[] = $drawing;
+            }
+        }
+
+        // Manager signature - UPDATED
+        if ($this->signatures && $this->signatures->facilitator_signature) {
+            $managerSignPath = storage_path('app/public/' . $this->signatures->facilitator_signature);
+            if (file_exists($managerSignPath)) {
+                $drawing = new Drawing();
+                $drawing->setName('Tanda Tangan Fasilitator');
+                $drawing->setDescription('Tanda Tangan Fasilitator');
+                $drawing->setPath($managerSignPath);
+                $drawing->setHeight(80);
+                $drawing->setWidth(150);
+                $drawing->setResizeProportional(true);
+                $drawing->setCoordinates('C' . $signatureImageRow);
+                $drawing->setOffsetX(10);
+                $drawing->setOffsetY(35); // INCREASED from 10 to 35
+                $drawings[] = $drawing;
+            }
+        }
+
+        // Auditee signature - UPDATED
+        if ($this->signatures && $this->signatures->auditee_signature) {
+            $auditeeSignPath = storage_path('app/public/' . $this->signatures->auditee_signature);
+            if (file_exists($auditeeSignPath)) {
+                $drawing = new Drawing();
+                $drawing->setName('Tanda Tangan Auditee');
+                $drawing->setDescription('Tanda Tangan Auditee');
+                $drawing->setPath($auditeeSignPath);
+                $drawing->setHeight(80);
+                $drawing->setWidth(150);
+                $drawing->setResizeProportional(true);
+                $drawing->setCoordinates('E' . $signatureImageRow);
+                $drawing->setOffsetX(10);
+                $drawing->setOffsetY(35); // INCREASED from 10 to 35
+                $drawings[] = $drawing;
+            }
         }
 
         return $drawings;

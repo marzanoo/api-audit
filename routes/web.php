@@ -108,8 +108,8 @@ Route::middleware('auth:web')->group(function () {
 
 //Audit Office
 Route::middleware('auth:web')->group(function () {
-    Route::get('/audit-office-admin', [AuditOfficeAdminController::class, 'showLantai'])->name('audit-office-admin');
-    Route::get('/audit-office-admin-area/{id}', [AuditOfficeAdminController::class, 'showArea'])->name('audit-office-admin-area');
+    Route::get('/audit-office-admin', [AuditOfficeAdminController::class, 'showArea'])->name('audit-office-admin');
+    // Route::get('/audit-office-admin-area/{id}', [AuditOfficeAdminController::class, 'showArea'])->name('audit-office-admin-area');
     Route::get('/audit-office-admin-audit-form/{id}', [AuditOfficeAdminController::class, 'showAuditForm'])->name('audit-office-admin-audit-form');
     Route::get('/detail-audit-office-admin-audit-form/{id}', [AuditOfficeAdminController::class, 'showAuditAnswer'])->name('detail-audit-office-admin-audit-form');
     Route::get('/admin/audit-office/preview-excel/{id}', [AuditOfficeAdminController::class, 'previewExcel'])->name('audit-office-admin-preview-excel');

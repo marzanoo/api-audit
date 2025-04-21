@@ -20,10 +20,16 @@ class AuditOfficeAdminController extends Controller
         return view('admin.audit-office.index', compact('lantai'));
     }
 
-    public function showArea($id)
+    public function showAreaByLantai($id)
     {
         $lantaiId = $id;
         $area = Area::with('lantai:id,lantai', 'karyawans:emp_id,emp_name')->where('lantai_id', $lantaiId)->get();
+        return view('admin.audit-office.area', compact('area'));
+    }
+
+    public function showArea()
+    {
+        $area = Area::with('lantai:id,lantai', 'karyawans:emp_id,emp_name')->where('lantai_id', 4)->get();
         return view('admin.audit-office.area', compact('area'));
     }
 
@@ -137,9 +143,12 @@ class AuditOfficeAdminController extends Controller
         $auditAnswer = AuditAnswer::where('id', $auditAnswerId)->first();
         $grade = $this->getGrade($auditAnswerId);
 
+        // Get signatures data
+        $signatures = DetailSignatureAuditAnswer::where('audit_answer_id', $auditAnswerId)->first();
+
         $fileName = 'Audit_Report_' . $auditAnswer->area_id . '_' . date('Y-m-d') . '.xlsx';
 
-        return Excel::download(new AuditAnswerExport($formattedData, $auditAnswer, $grade), $fileName);
+        return Excel::download(new AuditAnswerExport($formattedData, $auditAnswer, $grade, $signatures), $fileName);
     }
 
     private function formatAuditData($data)
