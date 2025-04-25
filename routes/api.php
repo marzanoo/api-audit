@@ -38,7 +38,9 @@ Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-o
 Route::middleware('auth:api')->post('/reset-device', [AuthController::class, 'resetDevice']);
 Route::post('/password/forgot', [PasswordResetController::class, 'sendResetLink']);
 Route::post('/password/reset', [PasswordResetController::class, 'resetPassword']);
+Route::post('/verify-reset-otp', [PasswordResetController::class, 'verifyOtpReset']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+Route::post('/resend-otp-reset', [PasswordResetController::class, 'resendOtpReset']);
 Route::middleware('auth:api')->get('/user/{id}', [AuthController::class, 'show']);
 //Karyawan
 Route::middleware('auth:api')->get('/karyawan/{nik}', [KaryawanController::class, 'getKaryawan']);

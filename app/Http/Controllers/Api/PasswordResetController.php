@@ -20,6 +20,11 @@ class PasswordResetController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan'
+            ], 404);
+        }
 
         $user->generateOtpReset();
 

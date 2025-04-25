@@ -274,7 +274,7 @@ class AuditAnswerExport implements FromCollection, WithHeadings, WithStyles, Wit
         $sheet->mergeCells('A' . $signatureImageRow . ':B' . $signatureImageRow);
         $sheet->mergeCells('C' . $signatureImageRow . ':D' . $signatureImageRow);
         $sheet->mergeCells('E' . $signatureImageRow . ':F' . $signatureImageRow);
-        $sheet->getRowDimension($signatureImageRow)->setRowHeight(150); // Tinggi untuk ruang tanda tangan - INCREASED
+        $sheet->getRowDimension($signatureImageRow)->setRowHeight(100); // Tinggi untuk ruang tanda tangan - INCREASED
 
         // Merge cells untuk nama tanda tangan
         $nameSignatureRow = $lastRow - 2;
